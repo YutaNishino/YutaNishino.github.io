@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+import time
+
+COPYRIGHT_YEAR = time.strftime("%Y")
 
 AUTHOR = 'Yuta Nishino'
 SITENAME = 'Yuta Nishino'
@@ -33,3 +36,4 @@ DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
+
