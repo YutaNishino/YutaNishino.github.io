@@ -20,17 +20,17 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/Lists.html">Lists</a></h1>
+                    <h1 class="entry-title"><a href="/Stacks.html">Stacks and imitating recursion</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2018-01-06T23:00:00+09:00">
-                Published: Sat 06 January 2018
+        <abbr class="published" title="2018-01-10T17:00:00+09:00">
+                Published: Wed 10 January 2018
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
         </address>
 <p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
+<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
 </footer><!-- /.post-info --><style type="text/css">/*!
 *
 * IPython notebook
@@ -1007,7 +1007,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1>List</h1>
+<h1>Stacks</h1>
 </div>
 </div>
 </div>
@@ -1015,66 +1015,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note: This is the first post in this blog.</p>
-<p>I will investigate basic data structures and algorithms to understand how they can be implemented and how the implementation affect their performance.
-The contents is mainly based on Data Structures and Algorithm Analysis (<a href="https://people.cs.vt.edu/shaffer/Book/">https://people.cs.vt.edu/shaffer/Book/</a>). In the book the implementations are written in Java, however, I will use Scala instead. Also, my own analyses are added to the contennts.
-Enough talking, let's begin.</p>
-<p>The list is arguably the most fundamental data structure in computer science. It is just a simple sequence that contain multiple data. However, there are more than one implementation for it. The space complexity of a list and the time complexities of the operations on it is dependent on the implementation.
-Put implementation aside, we can define the operations we want a list to perform. Let's call it ADT (abstract data types). ADT consists of operations the data structure must perform however they are implemented. It can have the smallest number of operations so that combining the operations can do more complicated operations. First, let's consider it for the list.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>List "barebone" ADT</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">trait</span> <span class="nc">BareBoneListADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
-    <span class="k">def</span> <span class="n">append</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">getValue</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
-<span class="o">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[3]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">trait</span> <span class="ansi-cyan-fg">BareBoneListADT</span></pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>However, straightforward implementation of this ADT cause performance issue for some of the operations. I will detail it later. Instead, we can come up with ADT with more operation to perform better for the real world requirements.</p>
+<p>Stack is a data structure that can perform a part of the operation that lists can. We can take only the last element appended to the stack. The operation taking out the element is called "pop", and appending the element is called "push". It sounds like there is no use for stacks, however, stacks can perform those operations more efficiently than lists. This is another kind of tradeoff we saw for lists.
+Analogous to lists, stacks can be implemented as array-based and linked-stack. And the implementations are quite simple.</p>
 
 </div>
 </div>
@@ -1083,7 +1025,7 @@ Put implementation aside, we can define the operations we want a list to perform
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>List "realistic" ADT</h2>
+<h2>Stack ADT</h2>
 </div>
 </div>
 </div>
@@ -1092,30 +1034,16 @@ Put implementation aside, we can define the operations we want a list to perform
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">trait</span> <span class="nc">ListADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">trait</span> <span class="nc">StackADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span>
     
-    <span class="k">def</span> <span class="n">insert</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
+    <span class="k">def</span> <span class="n">push</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
     
-    <span class="k">def</span> <span class="n">append</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
+    <span class="k">def</span> <span class="n">pop</span><span class="k">:</span> <span class="kt">E</span>
     
-    <span class="k">def</span> <span class="n">remove</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
-    
-    <span class="k">def</span> <span class="n">moveToStart</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">moveToEnd</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">prev</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">next</span><span class="k">:</span> <span class="kt">Unit</span>
+    <span class="k">def</span> <span class="n">peek</span><span class="k">:</span> <span class="kt">E</span>
     
     <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span>
-    
-    <span class="k">def</span> <span class="n">currPos</span><span class="k">:</span> <span class="kt">Int</span>
-    
-    <span class="k">def</span> <span class="n">moveToPos</span><span class="o">(</span><span class="n">pos</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">getValue</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1135,7 +1063,7 @@ Put implementation aside, we can define the operations we want a list to perform
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">trait</span> <span class="ansi-cyan-fg">ListADT</span></pre>
+<pre>defined <span class="ansi-green-fg">trait</span> <span class="ansi-cyan-fg">StackADT</span></pre>
 </div>
 
 </div>
@@ -1148,133 +1076,7 @@ Put implementation aside, we can define the operations we want a list to perform
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that We have done important design decision in this ADT that we make it hold the current position in a list.
-There are two distinctive ways we can implement a list. One is called array-based list, and the other is called linked list.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>Array-based list implementation</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.reflect.ClassTag</span>
-
-<span class="k">class</span> <span class="nc">AList</span><span class="o">[</span><span class="kt">E:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">ListADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="n">maxSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">size</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">listSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">curr</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="n">listArray</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">maxSize</span><span class="o">)</span>
-    
-    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">=</span> <span class="mi">0</span>
-        <span class="n">curr</span> <span class="k">=</span> <span class="mi">0</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">insert</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">listSize</span> <span class="n">until</span> <span class="n">curr</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="n">listArray</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">listArray</span><span class="o">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
-        <span class="n">listArray</span><span class="o">(</span><span class="n">curr</span><span class="o">)</span> <span class="k">=</span> <span class="n">item</span>
-        <span class="n">listSize</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">append</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">listArray</span><span class="o">(</span><span class="n">listSize</span><span class="o">)</span> <span class="k">=</span> <span class="n">item</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">remove</span><span class="o">()</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">curr</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">curr</span> <span class="o">&gt;=</span> <span class="n">listSize</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="o">{</span>
-                <span class="k">val</span> <span class="n">item</span> <span class="k">=</span> <span class="n">listArray</span><span class="o">(</span><span class="n">curr</span><span class="o">)</span>
-                <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">curr</span> <span class="n">until</span> <span class="n">listSize</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="n">listArray</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">listArray</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
-                <span class="n">listSize</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">)</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">moveToStart</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">curr</span> <span class="k">=</span> <span class="mi">0</span>
-    
-    <span class="k">def</span> <span class="n">moveToEnd</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">curr</span> <span class="k">=</span> <span class="n">listSize</span>
-    
-    <span class="k">def</span> <span class="n">prev</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="n">curr</span> <span class="o">-=</span> <span class="mi">1</span>
-    
-    <span class="k">def</span> <span class="n">next</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">&lt;</span> <span class="n">listSize</span><span class="o">)</span> <span class="n">curr</span> <span class="o">+=</span> <span class="mi">1</span>
-    
-    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">listSize</span>
-    
-    <span class="k">def</span> <span class="n">currPos</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">curr</span>
-    
-    <span class="k">def</span> <span class="n">moveToPos</span><span class="o">(</span><span class="n">pos</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">assert</span><span class="o">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">listSize</span><span class="o">)</span>
-        <span class="n">curr</span> <span class="k">=</span> <span class="n">pos</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">getValue</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="c1">// use pattern match to return None if curr is out of range</span>
-        <span class="n">curr</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">curr</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">curr</span> <span class="o">&lt;</span> <span class="n">listSize</span> <span class="k">=&gt;</span> <span class="nc">Some</span><span class="o">(</span><span class="n">listArray</span><span class="o">(</span><span class="n">curr</span><span class="o">))</span>
-            <span class="k">case</span> <span class="n">outOfRange</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[4]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre><span class="ansi-green-fg">import </span><span class="ansi-cyan-fg">scala.reflect.ClassTag
-
-</span>
-defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">AList</span></pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<div class="footnotes">
-<hr>
-<ol></ol>
-</div>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>Linked list implementation</h2>
+<h2>Array-based stack</h2>
 </div>
 </div>
 </div>
@@ -1283,103 +1085,35 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ALis
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">class</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">],</span> <span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span> <span class="o">{</span>
-    <span class="c1">// use pattern match for input to be None</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">linkElement</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">item</span>
-    
-    <span class="k">private</span> <span class="k">var</span> <span class="n">nextLink</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextVal</span>
-    
-    <span class="k">def</span> <span class="n">next</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextLink</span>
-    
-    <span class="k">def</span> <span class="n">setNext</span><span class="o">(</span><span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">nextLink</span> <span class="k">=</span> <span class="n">nextVal</span>
-    
-    <span class="k">def</span> <span class="n">element</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">linkElement</span>
-    
-    <span class="k">def</span> <span class="n">setElement</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">linkElement</span> <span class="k">=</span> <span class="n">item</span>
-<span class="o">}</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.reflect.ClassTag</span>
 
-<span class="k">class</span> <span class="nc">LList</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">ListADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
-    <span class="c1">// ignore the input size which is there for the consistency with AList</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">head</span><span class="k">:</span> <span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span>
+<span class="k">class</span> <span class="nc">AStack</span><span class="o">[</span><span class="kt">E:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">StackADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="n">maxSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">size</span>
     
-    <span class="k">private</span> <span class="k">var</span> <span class="n">tail</span><span class="k">:</span> <span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">head</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="n">top</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
     
-    <span class="k">private</span> <span class="k">var</span> <span class="n">curr</span><span class="k">:</span> <span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">head</span>
+    <span class="k">private</span> <span class="k">val</span> <span class="n">listArray</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">maxSize</span><span class="o">)</span>
     
-    <span class="k">private</span> <span class="k">var</span> <span class="n">listSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">top</span> <span class="k">=</span> <span class="mi">0</span>
     
-    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">head</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="nc">None</span><span class="o">)</span>
-        <span class="n">head</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span>
-        <span class="n">curr</span> <span class="k">=</span> <span class="n">head</span>
-        <span class="n">tail</span> <span class="k">=</span> <span class="n">head</span>
-        <span class="n">listSize</span> <span class="k">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="n">push</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="n">maxSize</span><span class="o">)</span>
+        <span class="n">listArray</span><span class="o">(</span><span class="n">top</span><span class="o">)</span> <span class="k">=</span> <span class="n">item</span>
+        <span class="n">top</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="o">}</span>
     
-    <span class="k">def</span> <span class="n">insert</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">curr</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="k">new</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">),</span> <span class="n">curr</span><span class="o">.</span><span class="n">next</span><span class="o">)))</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">tail</span> <span class="o">==</span> <span class="n">curr</span><span class="o">)</span> <span class="n">tail</span> <span class="k">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-        <span class="n">listSize</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">def</span> <span class="n">pop</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span>
+        <span class="n">top</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">listArray</span><span class="o">(</span><span class="n">top</span><span class="o">)</span>
     <span class="o">}</span>
     
-    <span class="k">def</span> <span class="n">append</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">tail</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="k">new</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">),</span> <span class="nc">None</span><span class="o">)))</span>
-        <span class="n">tail</span> <span class="k">=</span> <span class="n">tail</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-        <span class="n">listSize</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">def</span> <span class="n">peek</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span>
+        <span class="n">listArray</span><span class="o">(</span><span class="n">top</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
     <span class="o">}</span>
     
-    <span class="k">def</span> <span class="n">remove</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">curr</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
-                <span class="k">val</span> <span class="n">optionItem</span> <span class="k">=</span> <span class="n">link</span><span class="o">.</span><span class="n">element</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">tail</span> <span class="o">==</span> <span class="n">link</span><span class="o">)</span> <span class="n">tail</span> <span class="k">=</span> <span class="n">curr</span>
-                <span class="n">curr</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="n">link</span><span class="o">.</span><span class="n">next</span><span class="o">)</span>
-                <span class="n">listSize</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="n">optionItem</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">moveToStart</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">curr</span> <span class="k">=</span> <span class="n">head</span>
-    
-    <span class="k">def</span> <span class="n">moveToEnd</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">curr</span> <span class="k">=</span> <span class="n">tail</span>
-    
-    <span class="k">def</span> <span class="n">prev</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">==</span> <span class="n">head</span><span class="o">)</span> <span class="k">return</span>
-        <span class="k">var</span> <span class="n">temp</span><span class="k">:</span> <span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">head</span>
-        <span class="c1">// Since temp is between head and curr, temp.next is not None</span>
-        <span class="k">while</span> <span class="o">(</span><span class="n">temp</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span> <span class="o">!=</span> <span class="n">curr</span><span class="o">)</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-        <span class="n">curr</span> <span class="k">=</span> <span class="n">temp</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">next</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">!=</span> <span class="n">tail</span><span class="o">)</span> <span class="n">curr</span> <span class="k">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-    
-    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">listSize</span>
-    
-    <span class="k">def</span> <span class="n">currPos</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="k">var</span> <span class="n">temp</span><span class="k">:</span> <span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">head</span>
-        <span class="k">var</span> <span class="n">i</span> <span class="k">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">listSize</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">==</span> <span class="n">temp</span><span class="o">)</span> <span class="k">return</span> <span class="n">i</span>
-            <span class="n">temp</span> <span class="k">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="o">}</span>
-        <span class="n">i</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">moveToPos</span><span class="o">(</span><span class="n">pos</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">assert</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">listSize</span><span class="o">)</span>
-        <span class="n">curr</span> <span class="k">=</span> <span class="n">head</span>
-        <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">pos</span><span class="o">)</span> <span class="n">curr</span> <span class="k">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">getValue</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">curr</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">link</span><span class="o">.</span><span class="n">element</span>
-            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
+    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">top</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1399,8 +1133,89 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ALis
 
 
 <div class="output_text output_subarea output_execute_result">
+<pre><span class="ansi-green-fg">import </span><span class="ansi-cyan-fg">scala.reflect.ClassTag
+
+</span>
+defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">AStack</span></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// the same as Link for linked list</span>
+<span class="k">class</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">],</span> <span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span> <span class="o">{</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="n">linkElement</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">item</span>
+    
+    <span class="k">private</span> <span class="k">var</span> <span class="n">nextLink</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextVal</span>
+    
+    <span class="k">def</span> <span class="n">next</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextLink</span>
+    
+    <span class="k">def</span> <span class="n">setNext</span><span class="o">(</span><span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">nextLink</span> <span class="k">=</span> <span class="n">nextVal</span>
+    
+    <span class="k">def</span> <span class="n">element</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">linkElement</span>
+    
+    <span class="k">def</span> <span class="n">setElement</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">linkElement</span> <span class="k">=</span> <span class="n">item</span>
+<span class="o">}</span>
+
+<span class="k">class</span> <span class="nc">LStack</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">StackADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
+    <span class="c1">// ignore the input size which is there for the consistency with AStack</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="n">top</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">None</span>
+    
+    <span class="k">private</span> <span class="k">var</span> <span class="n">stackSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">top</span> <span class="k">=</span> <span class="nc">None</span>
+        <span class="n">stackSize</span> <span class="k">=</span> <span class="mi">0</span>
+    <span class="o">}</span>
+    
+    <span class="k">def</span> <span class="n">push</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">top</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="k">new</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">),</span> <span class="n">top</span><span class="o">))</span>
+        <span class="n">stackSize</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="o">}</span>
+    
+    <span class="k">def</span> <span class="n">pop</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="nc">None</span><span class="o">)</span>
+        <span class="k">val</span> <span class="n">item</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get</span>
+        <span class="n">top</span> <span class="k">=</span> <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">next</span>
+        <span class="n">stackSize</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">item</span>
+    <span class="o">}</span>
+    
+    <span class="k">def</span> <span class="n">peek</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="nc">None</span><span class="o">)</span>
+        <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get</span>
+    <span class="o">}</span>
+    
+    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">stackSize</span>
+<span class="o">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
 <pre>defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Link</span>
-defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">LList</span></pre>
+defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">LStack</span></pre>
 </div>
 
 </div>
@@ -1413,9 +1228,15 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">LLis
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This implementation holds several design decision for convenience. The most important one is that the curr (current position) points to the element preceding to the current position. It allows the linked list can perform some of the operation efficiently.</p>
-<p>Since this linked list is singly-linked, that is, only have the pointer to the next element, some of the operations such as prev takes $\Theta(n)$ time.
-One Obvious improvement of singly-linked list is the doubly-linked list. Doubly-linked list lowers time complexity for moving the current position to one previous position though it takes more space on memory.</p>
+<h2>Comparison of stack implementations</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As mentioned above, stacks are efficient for what they can do. As for time complexity, it is obvious from implementations that they do all the operation in $\Theta(1)$ time. Space complexity is the same as the list for each implementation.</p>
 
 </div>
 </div>
@@ -1424,8 +1245,7 @@ One Obvious improvement of singly-linked list is the doubly-linked list. Doubly-
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><h2>Comparison of list implementations</h2></p>
-<h3>Time complexity</h3>
+<h2>Imitating recursion</h2>
 </div>
 </div>
 </div>
@@ -1433,89 +1253,8 @@ One Obvious improvement of singly-linked list is the doubly-linked list. Doubly-
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<table>
-<thead><tr>
-<th>Operation</th>
-<th style="text-align:center">Array</th>
-<th style="text-align:center">Singly-linked</th>
-<th style="text-align:center">Doubly-linked</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>clear</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>insert</td>
-<td style="text-align:center">$\Theta(n)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>append</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>remove</td>
-<td style="text-align:center">$\Theta(n)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>moveToStart</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>moveToEnd</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>prev</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(n)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>next</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>length</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-<tr>
-<td>currPos</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(n)$</td>
-<td style="text-align:center">$\Theta(n)$</td>
-</tr>
-<tr>
-<td>moveToPos</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(n)$</td>
-<td style="text-align:center">$\Theta(n)$</td>
-</tr>
-<tr>
-<td>getValue</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-<td style="text-align:center">$\Theta(1)$</td>
-</tr>
-</tbody>
-</table>
+<p>Recursive call of functions in a program is managed using a stack. When a subroutine is called, the program push the necessary information onto the stack,  and when it returns, the information is popped from the stack. Therefore, we can replace the recursion with a iteration with stack.
+As an example, I will show an implementation of the algorithm to solve Tower of Hanoi problem with iteration and stack.</p>
 
 </div>
 </div>
@@ -1524,19 +1263,95 @@ One Obvious improvement of singly-linked list is the doubly-linked list. Doubly-
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3>Space complexity and other limitations</h3>
+<h2>Tower of Hanoi</h2>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Since array-based list needs to know what the maximum number of elements is and  takes space for them, it takes $\Omega(n)$ space.</p>
-<p>Linked list does not need to specify the number of elements when it is initialized and it takes $\Theta(n)$ space. However, linked list needs one or two pointers for each element. It is significant disadvantage compared to array-based list when most of the list is empty.</p>
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">Operation</span> <span class="k">extends</span> <span class="nc">Enumeration</span> <span class="o">{</span>
+    <span class="k">type</span> <span class="kt">Operation</span> <span class="o">=</span> <span class="nc">Value</span>
+    <span class="k">val</span> <span class="nc">CALL</span><span class="o">,</span> <span class="nc">MOVE</span> <span class="k">=</span> <span class="nc">Value</span>
+<span class="o">}</span>
+<span class="k">import</span> <span class="nn">Operation._</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">TOH</span><span class="o">(</span><span class="n">operation</span><span class="k">:</span> <span class="kt">Operation</span><span class="o">,</span> <span class="n">size</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">goal</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">temp</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="k">this</span><span class="o">(</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">goal</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">temp</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="k">this</span><span class="o">(</span><span class="nc">CALL</span><span class="o">,</span> <span class="n">size</span><span class="o">,</span> <span class="n">start</span><span class="o">,</span> <span class="n">goal</span><span class="o">,</span> <span class="n">temp</span><span class="o">)</span>
+    
+    <span class="k">def</span> <span class="k">this</span><span class="o">(</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">goal</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="k">this</span><span class="o">(</span><span class="nc">MOVE</span><span class="o">,</span> <span class="n">size</span><span class="o">,</span> <span class="n">start</span><span class="o">,</span> <span class="n">goal</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+    
+    <span class="k">def</span> <span class="n">move</span><span class="o">()</span> <span class="k">=</span> <span class="n">println</span><span class="o">(</span><span class="s">s&quot;Move ring </span><span class="si">$size</span><span class="s"> from pole </span><span class="si">$start</span><span class="s"> to pole </span><span class="si">$goal</span><span class="s">&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="n">solveTOH</span><span class="o">(</span><span class="n">height</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">stack</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AStack</span><span class="o">[</span><span class="kt">TOH</span><span class="o">](</span><span class="mi">2</span> <span class="o">*</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">push</span><span class="o">(</span><span class="k">new</span> <span class="nc">TOH</span><span class="o">(</span><span class="n">height</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
+    <span class="k">while</span><span class="o">(</span><span class="n">stack</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">item</span><span class="k">:</span> <span class="kt">TOH</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">operation</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">MOVE</span> <span class="k">=&gt;</span> <span class="n">item</span><span class="o">.</span><span class="n">move</span>
+            <span class="k">case</span> <span class="nc">CALL</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="o">{</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">push</span><span class="o">(</span><span class="k">new</span> <span class="nc">TOH</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">temp</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">goal</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="o">))</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">push</span><span class="o">(</span><span class="k">new</span> <span class="nc">TOH</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="n">size</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">goal</span><span class="o">))</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">push</span><span class="o">(</span><span class="k">new</span> <span class="nc">TOH</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">temp</span><span class="o">,</span> <span class="n">item</span><span class="o">.</span><span class="n">goal</span><span class="o">))</span>
+            <span class="o">}</span>
+            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">solveTOH</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</pre></div>
 
 </div>
 </div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Move ring 1 from pole 1 to pole 2
+Move ring 2 from pole 1 to pole 3
+Move ring 1 from pole 2 to pole 3
+Move ring 3 from pole 1 to pole 2
+Move ring 1 from pole 3 to pole 1
+Move ring 2 from pole 3 to pole 2
+Move ring 1 from pole 1 to pole 2
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">Operation</span>
+<span class="ansi-green-fg">import </span><span class="ansi-cyan-fg">Operation._
+
+</span>
+defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">TOH</span>
+defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">solveTOH</span></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
  
 
@@ -1571,6 +1386,50 @@ One Obvious improvement of singly-linked list is the doubly-linked list. Doubly-
 </script>
                 </article>
             </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/Lists.html" rel="bookmark"
+                           title="Permalink to Lists">Lists</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-01-06T23:00:00+09:00">
+                Published: Sat 06 January 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
+        </address>
+<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
+<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
+</footer><!-- /.post-info -->                
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1>List</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note: This is the first post in this blog.</p>
+<p>I will investigate basic data structures and algorithms to understand how they can be implemented and how the implementation affect their performance.
+The contents is mainly based on Data Structures and Algorithm Analysis (<a href="https://people.cs.vt.edu/shaffer/Book/">https://people.cs.vt.edu/shaffer/Book/</a>). In the book the implementations are written in Java, however, I will use Scala instead. Also, my own analyses are added to the contennts.
+Enough talking, let's begin.</p>
+                <a class="readmore" href="/Lists.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
         </section><!-- /#extras -->
 
