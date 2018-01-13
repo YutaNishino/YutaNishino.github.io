@@ -1106,7 +1106,7 @@ There is a data structure containing queue as a special case and it is called de
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.reflect.ClassTag</span>
@@ -1193,7 +1193,7 @@ There is a data structure containing queue as a special case and it is called de
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 
@@ -1221,7 +1221,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeq
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">class</span> <span class="nc">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">],</span> <span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]],</span> <span class="n">prevVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span> <span class="o">{</span>
@@ -1275,41 +1275,35 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeq
     <span class="o">}</span>
     
     <span class="k">def</span> <span class="n">pollFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">dequeSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
-                <span class="k">val</span> <span class="n">optionItem</span> <span class="k">=</span> <span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">element</span>
-                <span class="n">front</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">next</span><span class="o">)</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">isEmpty</span><span class="o">)</span> <span class="n">rear</span> <span class="k">=</span> <span class="n">front</span>
-                <span class="n">dequeSize</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="n">optionItem</span>
+        <span class="n">front</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span>
+            <span class="n">front</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">next</span><span class="o">)</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">isEmpty</span><span class="o">)</span> <span class="n">rear</span> <span class="k">=</span> <span class="n">front</span>
+            <span class="n">dequeSize</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">link</span><span class="o">.</span><span class="n">element</span>
         <span class="o">}</span>
     <span class="o">}</span>
-    
+
     <span class="k">def</span> <span class="n">pollLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">dequeSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
+        <span class="n">rear</span><span class="o">.</span><span class="n">element</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">e</span><span class="o">)</span> <span class="k">=&gt;</span>
                 <span class="k">val</span> <span class="n">optionItem</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">element</span>
                 <span class="n">rear</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">get</span>
                 <span class="n">dequeSize</span> <span class="o">-=</span> <span class="mi">1</span>
                 <span class="n">optionItem</span>
         <span class="o">}</span>
     <span class="o">}</span>
-    
+
     <span class="k">def</span> <span class="n">peekFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">dequeSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">element</span>
+        <span class="n">front</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">link</span><span class="o">.</span><span class="n">element</span>
         <span class="o">}</span>
     <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">peekLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">dequeSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">rear</span><span class="o">.</span><span class="n">element</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="n">peekLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">element</span>
     
     <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">dequeSize</span>
 <span class="o">}</span>
@@ -1325,7 +1319,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeq
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[4]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
