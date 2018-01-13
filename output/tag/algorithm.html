@@ -1182,7 +1182,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ASta
     <span class="o">}</span>
     
     <span class="k">def</span> <span class="n">pop</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="nc">None</span><span class="o">)</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span><span class="o">.</span><span class="n">isDefined</span><span class="o">)</span>
         <span class="k">val</span> <span class="n">item</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get</span>
         <span class="n">top</span> <span class="k">=</span> <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">next</span>
         <span class="n">stackSize</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -1190,7 +1190,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ASta
     <span class="o">}</span>
     
     <span class="k">def</span> <span class="n">peek</span><span class="k">:</span> <span class="kt">E</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span> <span class="o">!=</span> <span class="nc">None</span><span class="o">)</span>
+        <span class="n">assert</span> <span class="o">(</span><span class="n">top</span><span class="o">.</span><span class="n">isDefined</span><span class="o">)</span>
         <span class="n">top</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get</span>
     <span class="o">}</span>
     

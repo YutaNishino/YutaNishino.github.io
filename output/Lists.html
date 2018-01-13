@@ -1040,7 +1040,7 @@ Put implementation aside, we can define the operations we want a list to perform
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">trait</span> <span class="nc">BareBoneListADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
@@ -1060,7 +1060,7 @@ Put implementation aside, we can define the operations we want a list to perform
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -1169,7 +1169,7 @@ There are two distinctive ways we can implement a list. One is called array-base
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.reflect.ClassTag</span>
@@ -1196,15 +1196,14 @@ There are two distinctive ways we can implement a list. One is called array-base
         <span class="n">listArray</span><span class="o">(</span><span class="n">listSize</span><span class="o">)</span> <span class="k">=</span> <span class="n">item</span>
     <span class="o">}</span>
     
-    <span class="k">def</span> <span class="n">remove</span><span class="o">()</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">remove</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
         <span class="n">curr</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="o">(</span><span class="n">curr</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">curr</span> <span class="o">&gt;=</span> <span class="n">listSize</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">curr</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">curr</span> <span class="o">&gt;=</span> <span class="n">listSize</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
                 <span class="k">val</span> <span class="n">item</span> <span class="k">=</span> <span class="n">listArray</span><span class="o">(</span><span class="n">curr</span><span class="o">)</span>
                 <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">curr</span> <span class="n">until</span> <span class="n">listSize</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="n">listArray</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">listArray</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
                 <span class="n">listSize</span> <span class="o">-=</span> <span class="mi">1</span>
                 <span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">)</span>
-            <span class="o">}</span>
         <span class="o">}</span>
     <span class="o">}</span>
     
@@ -1245,7 +1244,7 @@ There are two distinctive ways we can implement a list. One is called array-base
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[4]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 
@@ -1285,11 +1284,10 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ALis
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">class</span> <span class="nc">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">],</span> <span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span> <span class="o">{</span>
-    <span class="c1">// use pattern match for input to be None</span>
     <span class="k">private</span> <span class="k">var</span> <span class="n">linkElement</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">item</span>
     
     <span class="k">private</span> <span class="k">var</span> <span class="n">nextLink</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Link</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextVal</span>
@@ -1336,13 +1334,12 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ALis
     <span class="k">def</span> <span class="n">remove</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
         <span class="n">curr</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
             <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span>
                 <span class="k">val</span> <span class="n">optionItem</span> <span class="k">=</span> <span class="n">link</span><span class="o">.</span><span class="n">element</span>
                 <span class="k">if</span> <span class="o">(</span><span class="n">tail</span> <span class="o">==</span> <span class="n">link</span><span class="o">)</span> <span class="n">tail</span> <span class="k">=</span> <span class="n">curr</span>
                 <span class="n">curr</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="n">link</span><span class="o">.</span><span class="n">next</span><span class="o">)</span>
                 <span class="n">listSize</span> <span class="o">-=</span> <span class="mi">1</span>
                 <span class="n">optionItem</span>
-            <span class="o">}</span>
         <span class="o">}</span>
     <span class="o">}</span>
     
@@ -1398,7 +1395,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ALis
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt output_prompt">Out[10]:</div>
 
 
 
