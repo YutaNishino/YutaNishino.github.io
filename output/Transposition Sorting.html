@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Queues and Deques</title>
+        <title>Transposition Sorting</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -21,21 +21,21 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="/Queues.html" rel="bookmark"
-           title="Permalink to Queues and Deques">Queues and Deques</a></h1>
+        <a href="/Transposition Sorting.html" rel="bookmark"
+           title="Permalink to Transposition Sorting">Transposition Sorting</a></h1>
     </header>
 
     <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2018-01-11T15:00:00+09:00">
-                Published: Thu 11 January 2018
+        <abbr class="published" title="2018-01-15T17:00:00+09:00">
+                Published: Mon 15 January 2018
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
         </address>
 <p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
+<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
 </footer><!-- /.post-info -->      <style type="text/css">/*!
 *
 * IPython notebook
@@ -1012,7 +1012,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1>Queues</h1>
+<h1>Sorting by transposition</h1>
 </div>
 </div>
 </div>
@@ -1020,8 +1020,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Like stack, queue is a data structure that have ADT restricted compared with one of list. Queue can perform the operation that append an element at the rear of the queue and remove and return the element at the front.
-There is a data structure containing queue as a special case and it is called deque (double-ended queue). Deque can perform adding an element at the front of the queue and removing at the rear as well as all operations queue can.</p>
+<p>The simplest sorting algorithms use transposition to sort an array of data. Three major algorithms in this type are insertion sort, bubble sort, selection sort. I also write about heapsort that is an algothm that apply the principle behind the selection sort more efficiently. I will show sample implementations of these algorithms and then analyze the performances.</p>
 
 </div>
 </div>
@@ -1030,8 +1029,7 @@ There is a data structure containing queue as a special case and it is called de
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Since queue implementation is also a special case of it of deque, I will show the array-based and linked implementation of deque. Array-based implementations of queue and deque is nearly identical and adding operations only deque can do is straightforward. Linked queue needs singly-linked list to implement, while linked deque needs doubly-linked list.</p>
-
+<h2>Insertion sort</h2>
 </div>
 </div>
 </div>
@@ -1039,7 +1037,8 @@ There is a data structure containing queue as a special case and it is called de
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Deque ADT</h2>
+<p>An intuitive way for humans to sort things is to pick two things and put them in order, and then pick next to put it in the correct position, and so on. This also can be done on the computer, and the algorithm is called insertion sort.</p>
+
 </div>
 </div>
 </div>
@@ -1048,22 +1047,18 @@ There is a data structure containing queue as a special case and it is called de
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">trait</span> <span class="nc">DequeADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
-    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">addFirst</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">addLast</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
-    
-    <span class="k">def</span> <span class="n">pollFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
-    
-    <span class="k">def</span> <span class="n">pollLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
-    
-    <span class="k">def</span> <span class="n">peekFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
-    
-    <span class="k">def</span> <span class="n">peekLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span>
-    
-    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">InsertionSort</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">var</span> <span class="n">j</span> <span class="k">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+      <span class="k">val</span> <span class="n">value</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
+      <span class="k">while</span> <span class="o">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
+        <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+      <span class="o">}</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">value</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1083,7 +1078,7 @@ There is a data structure containing queue as a special case and it is called de
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">trait</span> <span class="ansi-cyan-fg">DequeADT</span></pre>
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">InsertionSort</span></pre>
 </div>
 
 </div>
@@ -1096,7 +1091,7 @@ There is a data structure containing queue as a special case and it is called de
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Array-based deque</h2>
+<h2>Bubble Sort</h2>
 </div>
 </div>
 </div>
@@ -1104,7 +1099,7 @@ There is a data structure containing queue as a special case and it is called de
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Unlike list and stack, queue and deque needs circular list to implement. It is an array pretending the last element is the one preceding the first one.</p>
+<p>This algorithm have no intuitive interpretation and is the slowest of all the major sorting algorithms. However, it is important because the principle can be refined to be more effcient.</p>
 
 </div>
 </div>
@@ -1114,77 +1109,16 @@ There is a data structure containing queue as a special case and it is called de
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.reflect.ClassTag</span>
-
-<span class="k">class</span> <span class="nc">ADeque</span><span class="o">[</span><span class="kt">E:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">size</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">DequeADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="n">maxSize</span> <span class="k">=</span> <span class="n">size</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">front</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">rear</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">listSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">private</span> <span class="k">val</span> <span class="n">listArray</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">maxSize</span><span class="o">)</span>
-    
-    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">front</span> <span class="k">=</span> <span class="mi">0</span>
-        <span class="n">rear</span> <span class="k">=</span> <span class="mi">0</span>
-        <span class="n">listSize</span> <span class="k">=</span> <span class="mi">0</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">addFirst</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">listSize</span> <span class="o">==</span> <span class="n">maxSize</span> <span class="k">=&gt;</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
-                <span class="n">listArray</span><span class="o">(</span><span class="n">front</span><span class="o">)</span> <span class="k">=</span> <span class="n">item</span>
-                <span class="n">front</span> <span class="k">=</span> <span class="o">(</span><span class="n">front</span> <span class="o">+</span> <span class="n">maxSize</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">maxSize</span>
-                <span class="n">listSize</span> <span class="o">+=</span> <span class="mi">1</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">BubbleSort</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span>
+      <span class="k">for</span> <span class="o">(</span><span class="n">j</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">i</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+          <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
+          <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
         <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">addLast</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">if</span> <span class="n">listSize</span> <span class="o">==</span> <span class="n">maxSize</span> <span class="k">=&gt;</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
-                <span class="n">rear</span> <span class="k">=</span> <span class="o">(</span><span class="n">rear</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">maxSize</span>
-                <span class="n">listSize</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">listArray</span><span class="o">(</span><span class="n">rear</span><span class="o">)</span> <span class="k">=</span> <span class="n">item</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">pollFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
-                <span class="n">front</span> <span class="k">=</span> <span class="o">(</span><span class="n">front</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">maxSize</span>
-                <span class="n">listSize</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="nc">Some</span><span class="o">(</span><span class="n">listArray</span><span class="o">(</span><span class="n">front</span><span class="o">))</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">pollLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
-                <span class="k">val</span> <span class="n">optionItem</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="n">listArray</span><span class="o">(</span><span class="n">rear</span><span class="o">))</span>
-                <span class="n">rear</span> <span class="k">=</span> <span class="o">(</span><span class="n">rear</span> <span class="o">+</span> <span class="n">maxSize</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">maxSize</span>
-                <span class="n">listSize</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="n">optionItem</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">peekFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Some</span><span class="o">(</span><span class="n">listArray</span><span class="o">((</span><span class="n">front</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="n">maxSize</span><span class="o">))</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="k">def</span> <span class="n">peekLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">listSize</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Some</span><span class="o">(</span><span class="n">listArray</span><span class="o">(</span><span class="n">rear</span><span class="o">))</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">listSize</span>
+  <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1204,10 +1138,7 @@ There is a data structure containing queue as a special case and it is called de
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre><span class="ansi-green-fg">import </span><span class="ansi-cyan-fg">scala.reflect.ClassTag
-
-</span>
-defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeque</span></pre>
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">BubbleSort</span></pre>
 </div>
 
 </div>
@@ -1220,7 +1151,16 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeq
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Linked deque</h2>
+<h2>Selection Sort</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Bubble sort is slow particularly because it has to repeatedly swap adjacent element from bottom to the top to put the (next) smallest element into the correct position. Instead, selection sort remembers the position of the smallest element when it searches through the array, and swap element only one time for each next smallest element.</p>
+
 </div>
 </div>
 </div>
@@ -1229,88 +1169,17 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeq
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">class</span> <span class="nc">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">],</span> <span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]],</span> <span class="n">prevVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span> <span class="o">{</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">linkElement</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">item</span>
-    
-    <span class="k">private</span> <span class="k">var</span> <span class="n">nextLink</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextVal</span>
-    
-    <span class="k">private</span> <span class="k">var</span> <span class="n">prevLink</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">prevVal</span>
-    
-    <span class="k">def</span> <span class="n">next</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">nextLink</span>
-    
-    <span class="k">def</span> <span class="n">setNext</span><span class="o">(</span><span class="n">nextVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">nextLink</span> <span class="k">=</span> <span class="n">nextVal</span>
-    
-    <span class="k">def</span> <span class="n">prev</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]]</span> <span class="k">=</span> <span class="n">prevLink</span>
-    
-    <span class="k">def</span> <span class="n">setPrev</span><span class="o">(</span><span class="n">prevVal</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">prevLink</span> <span class="k">=</span> <span class="n">prevVal</span>
-    
-    <span class="k">def</span> <span class="n">element</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">linkElement</span>
-    
-    <span class="k">def</span> <span class="n">setElement</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">linkElement</span> <span class="k">=</span> <span class="n">item</span>
-<span class="o">}</span>
-
-<span class="k">class</span> <span class="nc">LDeque</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="nc">extends</span> <span class="nc">DequeADT</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="o">{</span>
-    <span class="k">private</span> <span class="k">var</span> <span class="n">front</span><span class="k">:</span> <span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span>
-    
-    <span class="k">private</span> <span class="k">var</span> <span class="n">rear</span><span class="k">:</span> <span class="kt">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">front</span>
-    
-    <span class="k">private</span> <span class="k">var</span> <span class="n">dequeSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
-    
-    <span class="k">def</span> <span class="n">clear</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">front</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span>
-        <span class="n">rear</span> <span class="k">=</span> <span class="n">front</span>
-        <span class="n">dequeSize</span> <span class="k">=</span> <span class="mi">0</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">SelectionSort</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">var</span> <span class="n">minIndex</span> <span class="k">=</span> <span class="n">i</span>
+      <span class="k">for</span> <span class="o">(</span><span class="n">j</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">i</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">minIndex</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">minIndex</span> <span class="k">=</span> <span class="n">j</span>
+      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">minIndex</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">minIndex</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
     <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">addFirst</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="k">val</span> <span class="n">element</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">),</span> <span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="n">front</span><span class="o">))</span>
-        <span class="c1">// when deque is empty</span>
-        <span class="n">front</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="n">rear</span> <span class="k">=</span> <span class="n">element</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span>
-        <span class="o">}</span>
-        <span class="n">front</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="n">element</span><span class="o">))</span>
-        <span class="n">dequeSize</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">addLast</span><span class="o">(</span><span class="n">item</span><span class="k">:</span> <span class="kt">E</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-        <span class="n">rear</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="k">new</span> <span class="nc">DLink</span><span class="o">[</span><span class="kt">E</span><span class="o">](</span><span class="nc">Some</span><span class="o">(</span><span class="n">item</span><span class="o">),</span> <span class="nc">None</span><span class="o">,</span> <span class="nc">Some</span><span class="o">(</span><span class="n">rear</span><span class="o">))))</span>
-        <span class="n">rear</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span>
-        <span class="n">dequeSize</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="o">}</span>
-    
-    <span class="k">def</span> <span class="n">pollFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">front</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span>
-            <span class="n">front</span><span class="o">.</span><span class="n">setNext</span><span class="o">(</span><span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">next</span><span class="o">)</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">front</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">isEmpty</span><span class="o">)</span> <span class="n">rear</span> <span class="k">=</span> <span class="n">front</span>
-            <span class="n">dequeSize</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="n">link</span><span class="o">.</span><span class="n">element</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="k">def</span> <span class="n">pollLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">rear</span><span class="o">.</span><span class="n">element</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">e</span><span class="o">)</span> <span class="k">=&gt;</span>
-                <span class="k">val</span> <span class="n">optionItem</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">element</span>
-                <span class="n">rear</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">get</span>
-                <span class="n">dequeSize</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="n">optionItem</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="k">def</span> <span class="n">peekFirst</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-        <span class="n">front</span><span class="o">.</span><span class="n">next</span> <span class="k">match</span> <span class="o">{</span>
-            <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">None</span>
-            <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">link</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">link</span><span class="o">.</span><span class="n">element</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="k">def</span> <span class="n">peekLast</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">E</span><span class="o">]</span> <span class="k">=</span> <span class="n">rear</span><span class="o">.</span><span class="n">element</span>
-    
-    <span class="k">def</span> <span class="n">length</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">dequeSize</span>
+  <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1330,8 +1199,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ADeq
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">DLink</span>
-defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">LDeque</span></pre>
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">SelectionSort</span></pre>
 </div>
 
 </div>
@@ -1344,7 +1212,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">LDeq
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Deque as queue, deque as stack</h2>
+<h2>Heapsort</h2>
 </div>
 </div>
 </div>
@@ -1352,7 +1220,110 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">LDeq
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Deque can perform all operation in the ADT in constant time. It means we can use it as queue, which is obvious, and as stack by restricting opeartion we use them to perform. However, since we have to use doubly-linked list to implement deque, the operation should be a bit slower when we use deque and it takes more space though the order of the time and space complexities are the same.</p>
+<p>Like selection sort, heapsort find the maximum value in the array. However, using the data structure called heap, it doesn't need to do $n-i$ comparison to find ith largest element.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">HeapSort</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="n">buildHeap</span><span class="o">(</span><span class="n">array</span><span class="o">)</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">1</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+      <span class="n">heapify</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">i</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">buildHeap</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">0</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+      <span class="n">heapify</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">heapify</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">index</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">maxIndex</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+                <span class="o">(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">var</span> <span class="n">largestIndex</span> <span class="k">=</span> <span class="n">index</span>
+    <span class="k">var</span> <span class="n">leftIndex</span> <span class="k">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">var</span> <span class="n">rightIndex</span> <span class="k">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">2</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">leftIndex</span> <span class="o">&lt;</span> <span class="n">maxIndex</span>
+      <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">leftIndex</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
+      <span class="n">largestIndex</span> <span class="k">=</span> <span class="n">leftIndex</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">rightIndex</span> <span class="o">&lt;</span> <span class="n">maxIndex</span>
+      <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">rightIndex</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
+      <span class="n">largestIndex</span> <span class="k">=</span> <span class="n">rightIndex</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">largestIndex</span> <span class="o">!=</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">index</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">index</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+      <span class="n">heapify</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">largestIndex</span><span class="o">,</span> <span class="n">maxIndex</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">HeapSort</span></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2>Comparison of the algorithms</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For the extra space used in sorting, all of these algorithms need only constant space. The former three algorithms run in $\Theta(n^2)$ time for average and worst cases. However, they behave differently in the best case. Insertion sort runs in $\Theta(n)$ time while the others in $\Theta(n^2)$ time. Since selection sort is the obvious improvement from bubble sort, selection sort runs faster than bubble sort by constant factor. Heapsort runs in $\Theta(n\log n)$ time in best, average, worst cases.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2>Practical use cases</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These algorithms are not particularly fast in the average (expected) cases. However, because of the favorable near best case behaviour of the insertion sort, when you know in advance that the array is mostly sorted, insertion sort runs the fastest. Other than that, insertion sort is used when the array is short. For the charasteristics, insertion sort is often used to be combined with other sophisticated sorting algorithms.
+Heapsort runs relatively fast and has good worst case time complexity so that it is used when worst case behaivour is concerned.</p>
 
 </div>
 </div>
