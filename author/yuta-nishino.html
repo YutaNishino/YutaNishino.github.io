@@ -20,10 +20,10 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/Transposition Sorting.html">Transposition Sorting</a></h1>
+                    <h1 class="entry-title"><a href="/Partition-Based Sorting.html">Partition-Based Sorting</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2018-01-15T17:00:00+09:00">
-                Published: Mon 15 January 2018
+        <abbr class="published" title="2018-01-18T17:00:00+09:00">
+                Published: Thu 18 January 2018
         </abbr>
 
         <address class="vcard author">
@@ -1007,7 +1007,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1>Sorting by transposition</h1>
+<h1>Sorting based on partition of an array</h1>
 </div>
 </div>
 </div>
@@ -1015,7 +1015,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The simplest sorting algorithms use transposition to sort an array of data. Three major algorithms in this type are insertion sort, bubble sort, selection sort. I also write about heapsort that is an algothm that apply the principle behind the selection sort more efficiently. I will show sample implementations of these algorithms and then analyze the performances.</p>
+<p>Sorting algorithms more efficient than the one by transpositions exploit the divide and conquer principle.</p>
 
 </div>
 </div>
@@ -1024,7 +1024,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Insertion sort</h2>
+<h2>Shellsort</h2>
 </div>
 </div>
 </div>
@@ -1032,7 +1032,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>An intuitive way for humans to sort things is to pick two things and put them in order, and then pick next to put it in the correct position, and so on. This also can be done on the computer, and the algorithm is called insertion sort.</p>
+<p>Shellsort utilizes the near best cases behaviour of insertion sort. It partition the array and then sort the subarray using insertion sort. Then it make subarrays with smaller gap, meaning fewer and longer subarray.</p>
 
 </div>
 </div>
@@ -1042,17 +1042,19 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">InsertionSort</span> <span class="o">{</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">ShellSort</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">var</span> <span class="n">j</span> <span class="k">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
-      <span class="k">val</span> <span class="n">value</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
-      <span class="k">while</span> <span class="o">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
-        <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">val</span> <span class="n">gaps</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">701</span><span class="o">,</span> <span class="mi">301</span><span class="o">,</span> <span class="mi">132</span><span class="o">,</span> <span class="mi">57</span><span class="o">,</span> <span class="mi">23</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">gap</span> <span class="k">&lt;-</span> <span class="n">gaps</span><span class="o">)</span>
+      <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">gap</span> <span class="n">until</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+        <span class="k">var</span> <span class="n">j</span> <span class="k">=</span> <span class="n">i</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="n">gap</span> <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="n">gap</span><span class="o">),</span> <span class="n">temp</span><span class="o">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="n">gap</span><span class="o">)</span>
+          <span class="n">j</span> <span class="o">-=</span> <span class="n">gap</span>
+        <span class="o">}</span>
+        <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
       <span class="o">}</span>
-      <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">value</span>
-    <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
@@ -1073,7 +1075,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">InsertionSort</span></pre>
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">ShellSort</span></pre>
 </div>
 
 </div>
@@ -1086,7 +1088,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Bubble Sort</h2>
+<h2>Mergesort</h2>
 </div>
 </div>
 </div>
@@ -1094,7 +1096,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This algorithm have no intuitive interpretation and is the slowest of all the major sorting algorithms. However, it is important because the principle can be refined to be more effcient.</p>
+<p>Mergesort consists of two steps. First is to recursively partition the array into subarrays until subarray is the one of length 1, then pick from smaller value to larger one to merge them.</p>
 
 </div>
 </div>
@@ -1104,15 +1106,43 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">BubbleSort</span> <span class="o">{</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">MergeSort</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span>
-      <span class="k">for</span> <span class="o">(</span><span class="n">j</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">i</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
-          <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
-          <span class="n">array</span><span class="o">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
-          <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+    <span class="k">val</span> <span class="n">copy</span> <span class="k">=</span> <span class="n">array</span><span class="o">.</span><span class="n">clone</span>
+    <span class="n">mergesortRec</span><span class="o">(</span><span class="n">copy</span><span class="o">,</span> <span class="n">array</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
+
+    <span class="k">def</span> <span class="n">mergesortRec</span><span class="o">(</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">result</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span>
+                     <span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">end</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">)</span> <span class="k">return</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">==</span> <span class="mi">2</span><span class="o">)</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">result</span><span class="o">(</span><span class="n">start</span><span class="o">),</span> <span class="n">result</span><span class="o">(</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">result</span><span class="o">(</span><span class="n">start</span><span class="o">)</span>
+          <span class="n">result</span><span class="o">(</span><span class="n">start</span><span class="o">)</span> <span class="k">=</span> <span class="n">result</span><span class="o">(</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
+          <span class="n">result</span><span class="o">(</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+          <span class="k">return</span>
         <span class="o">}</span>
+
+      <span class="k">val</span> <span class="n">mid</span> <span class="k">=</span> <span class="o">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">end</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span>
+      <span class="n">mergesortRec</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">array</span><span class="o">,</span> <span class="n">start</span><span class="o">,</span> <span class="n">mid</span><span class="o">)</span>
+      <span class="n">mergesortRec</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">array</span><span class="o">,</span> <span class="n">mid</span><span class="o">,</span> <span class="n">end</span><span class="o">)</span>
+
+      <span class="c1">// merge</span>
+      <span class="k">var</span> <span class="n">i</span> <span class="k">=</span> <span class="n">start</span>
+      <span class="k">var</span> <span class="n">j</span> <span class="k">=</span> <span class="n">mid</span>
+      <span class="k">var</span> <span class="n">index</span> <span class="k">=</span> <span class="n">start</span>
+      <span class="k">while</span><span class="o">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="n">end</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="n">end</span> <span class="o">||</span>
+          <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">mid</span> <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+          <span class="n">result</span><span class="o">(</span><span class="n">index</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+          <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="o">{</span>
+          <span class="n">result</span><span class="o">(</span><span class="n">index</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
+          <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="o">}</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
@@ -1133,7 +1163,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">BubbleSort</span></pre>
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">MergeSort</span></pre>
 </div>
 
 </div>
@@ -1146,7 +1176,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Selection Sort</h2>
+<h2>Quicksort</h2>
 </div>
 </div>
 </div>
@@ -1154,7 +1184,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Bubble sort is slow particularly because it has to repeatedly swap adjacent element from bottom to the top to put the (next) smallest element into the correct position. Instead, selection sort remembers the position of the smallest element when it searches through the array, and swap element only one time for each next smallest element.</p>
+<p>Quicksort is the fastest known general-purpose in-memory sorting algorithm in the average case when properly implemented. It select the pivot value from the array, divide it into two subarrays so that one subarray contains only the smaller values than the pivot, another  only the larger or equal values. Then it recursively sort the subarrays, then concatenate them.</p>
 
 </div>
 </div>
@@ -1164,15 +1194,53 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">SelectionSort</span> <span class="o">{</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">QuickSort</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">var</span> <span class="n">minIndex</span> <span class="k">=</span> <span class="n">i</span>
-      <span class="k">for</span> <span class="o">(</span><span class="n">j</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">i</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">j</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">minIndex</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">minIndex</span> <span class="k">=</span> <span class="n">j</span>
-      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">minIndex</span><span class="o">)</span>
-      <span class="n">array</span><span class="o">(</span><span class="n">minIndex</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
-      <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+    <span class="n">qSort</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+
+    <span class="k">def</span> <span class="n">qSort</span><span class="o">(</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">end</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="n">pivotIndex</span> <span class="k">=</span> <span class="n">findPivot</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">start</span><span class="o">,</span> <span class="n">end</span><span class="o">)</span>
+      <span class="k">val</span> <span class="n">pivotValue</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">pivotIndex</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">pivotIndex</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span> <span class="k">=</span> <span class="n">pivotValue</span>
+      <span class="k">val</span> <span class="n">rightStart</span> <span class="k">=</span> <span class="n">partition</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">start</span><span class="o">,</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">pivotValue</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">rightStart</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">rightStart</span><span class="o">)</span> <span class="k">=</span> <span class="n">pivotValue</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">rightStart</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="n">qSort</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">start</span><span class="o">,</span> <span class="n">rightStart</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">rightStart</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="n">qSort</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">rightStart</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">end</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="n">partition</span><span class="o">(</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">e</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">pivot</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="k">var</span> <span class="n">start</span> <span class="k">=</span> <span class="n">s</span>
+      <span class="k">var</span> <span class="n">end</span> <span class="k">=</span> <span class="n">e</span>
+      <span class="k">do</span> <span class="o">{</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">),</span> <span class="n">pivot</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">end</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">),</span> <span class="n">pivot</span><span class="o">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">end</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">)</span>
+        <span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span>
+        <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+      <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="o">)</span>
+      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span>
+      <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
+      <span class="n">start</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="n">findPivot</span><span class="o">(</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">start</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">end</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">mid</span> <span class="k">=</span> <span class="o">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">end</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">mid</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="n">start</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">mid</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="n">mid</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">start</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="n">start</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">mid</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">end</span><span class="o">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="n">mid</span>
+        <span class="o">}</span>
+        <span class="n">end</span>
+      <span class="o">}</span>
+      <span class="c1">// only two elements</span>
+      <span class="k">else</span> <span class="n">start</span>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -1194,7 +1262,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">SelectionSort</span></pre>
+<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">QuickSort</span></pre>
 </div>
 
 </div>
@@ -1207,7 +1275,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Heapsort</h2>
+<h2>Comparision of these algorithms</h2>
 </div>
 </div>
 </div>
@@ -1215,110 +1283,10 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Like selection sort, heapsort find the maximum value in the array. However, using the data structure called heap, it doesn't need to do $n-i$ comparison to find ith largest element.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">HeapSort</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">sort</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="n">buildHeap</span><span class="o">(</span><span class="n">array</span><span class="o">)</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">1</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
-      <span class="n">array</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
-      <span class="n">array</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
-      <span class="n">heapify</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">i</span><span class="o">)</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-
-  <span class="k">def</span> <span class="n">buildHeap</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">0</span> <span class="n">by</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
-      <span class="n">heapify</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
-  <span class="o">}</span>
-
-  <span class="k">def</span> <span class="n">heapify</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">index</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">maxIndex</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
-                <span class="o">(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">var</span> <span class="n">largestIndex</span> <span class="k">=</span> <span class="n">index</span>
-    <span class="k">var</span> <span class="n">leftIndex</span> <span class="k">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="k">var</span> <span class="n">rightIndex</span> <span class="k">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">2</span>
-
-    <span class="k">if</span> <span class="o">(</span><span class="n">leftIndex</span> <span class="o">&lt;</span> <span class="n">maxIndex</span>
-      <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">leftIndex</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
-      <span class="n">largestIndex</span> <span class="k">=</span> <span class="n">leftIndex</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">rightIndex</span> <span class="o">&lt;</span> <span class="n">maxIndex</span>
-      <span class="o">&amp;&amp;</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">rightIndex</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
-      <span class="n">largestIndex</span> <span class="k">=</span> <span class="n">rightIndex</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">largestIndex</span> <span class="o">!=</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">index</span><span class="o">)</span>
-      <span class="n">array</span><span class="o">(</span><span class="n">index</span><span class="o">)</span> <span class="k">=</span> <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">)</span>
-      <span class="n">array</span><span class="o">(</span><span class="n">largestIndex</span><span class="o">)</span> <span class="k">=</span> <span class="n">temp</span>
-      <span class="n">heapify</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="n">largestIndex</span><span class="o">,</span> <span class="n">maxIndex</span><span class="o">)</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[4]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">object</span> <span class="ansi-cyan-fg">HeapSort</span></pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>Comparison of the algorithms</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>For the extra space used in sorting, all of these algorithms need only constant space. The former three algorithms run in $\Theta(n^2)$ time for average and worst cases. However, they behave differently in the best case. Insertion sort runs in $\Theta(n)$ time while the others in $\Theta(n^2)$ time. Since selection sort is the obvious improvement from bubble sort, selection sort runs faster than bubble sort by constant factor. Heapsort runs in $\Theta(n\log n)$ time in best, average, worst cases.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>Practical use cases</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>These algorithms are not particularly fast in the average (expected) cases. However, because of the favorable near best case behaviour of the insertion sort, when you know in advance that the array is mostly sorted, insertion sort runs the fastest. Other than that, insertion sort is used when the array is short. For the charasteristics, insertion sort is often used to be combined with other sophisticated sorting algorithms.
-Heapsort runs relatively fast and has good worst case time complexity so that it is used when worst case behaivour is concerned.</p>
+<p>Since these algorithms are complex compared to transposition sort, analyzing time complexity of them is also not so simple.</p>
+<p>Mergesort is the easiest of the three to analyze, and it runs in $\Theta(n)$ time in the best, average, worst cases.</p>
+<p>The behaviour of the shellsort heavily depends on how the gap sequence is set. The one used above is called Ciura's sequence and it has the best known performance. The time complexity in the best cases is $\Theta(n)$, however, average and worst case complexity are not known.</p>
+<p>The time complexity of quicksort is $\Theta(n\log n)$ for best and average cases. Worst case occurs when pivot is always the lowest or highest value, and time complexity is $\Theta(n^2)$.</p>
 
 </div>
 </div>
@@ -1360,6 +1328,41 @@ Heapsort runs relatively fast and has good worst case time complexity so that it
                     <h1>Other articles</h1>
                     <hr />
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/Transposition Sorting.html" rel="bookmark"
+                           title="Permalink to Transposition Sorting">Transposition Sorting</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-01-15T17:00:00+09:00">
+                Published: Mon 15 January 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
+        </address>
+<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
+<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
+</footer><!-- /.post-info -->                
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1>Sorting by transposition</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The simplest sorting algorithms use transposition to sort an array of data. Three major algorithms in this type are insertion sort, bubble sort, selection sort. I also write about heapsort that is an algothm that apply the principle behind the selection sort more efficiently. I will show sample implementations of these algorithms and then analyze the performances.</p>
+                <a class="readmore" href="/Transposition Sorting.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

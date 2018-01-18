@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Yuta Nishino</title>
+        <title>Partition-Based Sorting</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -14,13 +14,18 @@
         <header id="banner" class="body">
                 <h1><a href="/">Yuta Nishino </a></h1>
                 <nav><ul>
-                    <li><a href="/category/computer-science.html">Computer Science</a></li>
+                    <li class="active"><a href="/category/computer-science.html">Computer Science</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/Partition-Based Sorting.html" rel="bookmark"
+           title="Permalink to Partition-Based Sorting">Partition-Based Sorting</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/Partition-Based Sorting.html">Partition-Based Sorting</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-01-18T17:00:00+09:00">
                 Published: Thu 18 January 2018
@@ -31,7 +36,7 @@
         </address>
 <p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
 <p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info --><style type="text/css">/*!
+</footer><!-- /.post-info -->      <style type="text/css">/*!
 *
 * IPython notebook
 *
@@ -1322,159 +1327,11 @@ h6:hover .anchor-link {
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Transposition Sorting.html" rel="bookmark"
-                           title="Permalink to Transposition Sorting">Transposition Sorting</a></h1>
-                </header>
+    </div><!-- /.entry-content -->
 
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-15T17:00:00+09:00">
-                Published: Mon 15 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Sorting by transposition</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The simplest sorting algorithms use transposition to sort an array of data. Three major algorithms in this type are insertion sort, bubble sort, selection sort. I also write about heapsort that is an algothm that apply the principle behind the selection sort more efficiently. I will show sample implementations of these algorithms and then analyze the performances.</p>
-                <a class="readmore" href="/Transposition Sorting.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Queues.html" rel="bookmark"
-                           title="Permalink to Queues and Deques">Queues and Deques</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-11T15:00:00+09:00">
-                Published: Thu 11 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Queues</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Like stack, queue is a data structure that have ADT restricted compared with one of list. Queue can perform the operation that append an element at the rear of the queue and remove and return the element at the front.
-There is a data structure containing queue as a special case and it is called deque (double-ended queue). Deque can perform adding an element at the front of the queue and removing at the rear as well as all operations queue can.</p>
-                <a class="readmore" href="/Queues.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Stacks.html" rel="bookmark"
-                           title="Permalink to Stacks and imitating recursion">Stacks and imitating recursion</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-10T17:00:00+09:00">
-                Published: Wed 10 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Stacks</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Stack is a data structure that can perform a part of the operation that lists can. We can take only the last element appended to the stack. The operation taking out the element is called "pop", and appending the element is called "push". It sounds like there is no use for stacks, however, stacks can perform those operations more efficiently than lists. This is another kind of tradeoff we saw for lists.
-Analogous to lists, stacks can be implemented as array-based and linked-stack. And the implementations are quite simple.</p>
-                <a class="readmore" href="/Stacks.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Lists.html" rel="bookmark"
-                           title="Permalink to Lists">Lists</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-06T23:00:00+09:00">
-                Published: Sat 06 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>List</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Note: This is the first post in this blog.</p>
-<p>I will investigate basic data structures and algorithms to understand how they can be implemented and how the implementation affect their performance.
-The contents is mainly based on Data Structures and Algorithm Analysis (<a href="https://people.cs.vt.edu/shaffer/Book/">https://people.cs.vt.edu/shaffer/Book/</a>). In the book the implementations are written in Java, however, I will use Scala instead. Also, my own analyses are added to the contennts.
-Enough talking, let's begin.</p>
-                <a class="readmore" href="/Lists.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
         </section><!-- /#extras -->
 
