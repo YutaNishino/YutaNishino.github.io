@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Yuta Nishino - Yuta Nishino</title>
+        <title>ABC086D</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -14,14 +14,19 @@
         <header id="banner" class="body">
                 <h1><a href="/">Yuta Nishino </a></h1>
                 <nav><ul>
-                    <li><a href="/category/competitive-programming.html">Competitive programming</a></li>
+                    <li class="active"><a href="/category/competitive-programming.html">Competitive programming</a></li>
                     <li><a href="/category/computer-science.html">Computer Science</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/ABC086D.html" rel="bookmark"
+           title="Permalink to ABC086D">ABC086D</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/ABC086D.html">ABC086D</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-01-27T17:00:00+09:00">
                 Published: Sat 27 January 2018
@@ -32,7 +37,7 @@
         </address>
 <p>In <a href="/category/competitive-programming.html">Competitive programming</a>.</p>
 <p>tags: <a href="/tag/imos.html">imos</a> <a href="/tag/java.html">Java</a> </p>
-</footer><!-- /.post-info --><p>First, we can treat x and y as x modulo 2K and y modulo 2K.</p>
+</footer><!-- /.post-info -->      <p>First, we can treat x and y as x modulo 2K and y modulo 2K.</p>
 <p>I used imos method <a href="https://imoz.jp/algorithms/imos_method.html">https://imoz.jp/algorithms/imos_method.html</a> to count up the number in the array.
 After that, the array is folded back so that the cases where x &gt;= 2<em>K and y &gt;= 2</em>K hold are added up.</p>
 <div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
@@ -93,295 +98,11 @@ After that, the array is folded back so that the cases where x &gt;= 2<em>K and 
             <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ans</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">}</span>
-</pre></div>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</pre></div>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Binary Heap.html" rel="bookmark"
-                           title="Permalink to Binary Heap">Binary Heap</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-24T19:30:00+09:00">
-                Published: Wed 24 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Heap</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Heap is complete, partially ordered binary tree. Complete means every node at a depth of the tree has subtree that each height differs at most by 1. Partially ordered means that the a element stored in the tree is less than or equal only to its ancestors and greater than or equal only to its  descendants, or the other way around.</p>
-                <a class="readmore" href="/Binary Heap.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Binary Search Tree.html" rel="bookmark"
-                           title="Permalink to Binary Search Tree">Binary Search Tree</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-21T22:00:00+09:00">
-                Published: Sun 21 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Dictionary</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Search is surely the most frequenly performed action by computers. Let's consider a simple dictionary ADT that represent data structure that can do search and store information.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>Dictionary ADT</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-                <a class="readmore" href="/Binary Search Tree.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Partition-Based Sorting.html" rel="bookmark"
-                           title="Permalink to Partition-Based Sorting">Partition-Based Sorting</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-18T17:00:00+09:00">
-                Published: Thu 18 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Sorting based on partition of an array</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Sorting algorithms more efficient than the one by transpositions exploit the divide and conquer principle.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2>Shellsort</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Shellsort utilizes the near best cases behaviour of insertion sort. It partition the array and then sort the subarray using insertion sort. Then it make subarrays with smaller gap, meaning fewer and longer subarray.</p>
-                <a class="readmore" href="/Partition-Based Sorting.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Transposition Sorting.html" rel="bookmark"
-                           title="Permalink to Transposition Sorting">Transposition Sorting</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-15T17:00:00+09:00">
-                Published: Mon 15 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Sorting by transposition</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The simplest sorting algorithms use transposition to sort an array of data. Three major algorithms in this type are insertion sort, bubble sort, selection sort. I also write about heapsort that is an algothm that apply the principle behind the selection sort more efficiently. I will show sample implementations of these algorithms and then analyze the performances.</p>
-                <a class="readmore" href="/Transposition Sorting.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Queues.html" rel="bookmark"
-                           title="Permalink to Queues and Deques">Queues and Deques</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-11T15:00:00+09:00">
-                Published: Thu 11 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Queues</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Like stack, queue is a data structure that have ADT restricted compared with one of list. Queue can perform the operation that append an element at the rear of the queue and remove and return the element at the front.
-There is a data structure containing queue as a special case and it is called deque (double-ended queue). Deque can perform adding an element at the front of the queue and removing at the rear as well as all operations queue can.</p>
-                <a class="readmore" href="/Queues.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Stacks.html" rel="bookmark"
-                           title="Permalink to Stacks and imitating recursion">Stacks and imitating recursion</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-10T17:00:00+09:00">
-                Published: Wed 10 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Stacks</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Stack is a data structure that can perform a part of the operation that lists can. We can take only the last element appended to the stack. The operation taking out the element is called "pop", and appending the element is called "push". It sounds like there is no use for stacks, however, stacks can perform those operations more efficiently than lists. This is another kind of tradeoff we saw for lists.
-Analogous to lists, stacks can be implemented as array-based and linked-stack. And the implementations are quite simple.</p>
-                <a class="readmore" href="/Stacks.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Lists.html" rel="bookmark"
-                           title="Permalink to Lists">Lists</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-06T23:00:00+09:00">
-                Published: Sat 06 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>List</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Note: This is the first post in this blog.</p>
-<p>I will investigate basic data structures and algorithms to understand how they can be implemented and how the implementation affect their performance.
-The contents is mainly based on Data Structures and Algorithm Analysis (<a href="https://people.cs.vt.edu/shaffer/Book/">https://people.cs.vt.edu/shaffer/Book/</a>). In the book the implementations are written in Java, however, I will use Scala instead. Also, my own analyses are added to the contennts.
-Enough talking, let's begin.</p>
-                <a class="readmore" href="/Lists.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
         </section><!-- /#extras -->
 
