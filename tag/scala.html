@@ -21,17 +21,17 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/Searching Arrays and Peak Finding.html">Searching Arrays and Peak Finding</a></h1>
+                    <h1 class="entry-title"><a href="/Graph Representations.html">Graph Representations</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2018-01-28T00:00:00+09:00">
-                Published: Sun 28 January 2018
+        <abbr class="published" title="2018-01-29T21:30:00+09:00">
+                Published: Mon 29 January 2018
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
         </address>
 <p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
+<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/scala.html">Scala</a> </p>
 </footer><!-- /.post-info --><style type="text/css">/*!
 *
 * IPython notebook
@@ -1008,7 +1008,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1>Searching (un)sorted array</h1>
+<h1>Graph</h1>
 </div>
 </div>
 </div>
@@ -1016,31 +1016,47 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Sequential search</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>When searching unsorted array for some element, only what we can do is sequential search, which we take elements in the array one by one and check if it's the one we are searching for.</p>
+<p>A graph G consists of a set of the nonnegative number of vertices and a set of the nonnegative number of edges that connect two distinct vertices. It provides the ultimate flexibility to represent structure of data.</p>
+<p>In this article, I will show two ways to how to represent a graph on a computer.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2>Graph ADT</h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">SequentialSearch</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">search</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">target</span><span class="k">:</span> <span class="kt">T</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">element</span> <span class="k">&lt;-</span> <span class="n">array</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">element</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span>
-    <span class="o">}</span>
-    <span class="kc">false</span>
-  <span class="o">}</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">trait</span> <span class="nc">GraphADT</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">numVertices</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span>
+
+  <span class="k">def</span> <span class="n">numEdges</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span>
+
+  <span class="c1">// return the first neighbor of v</span>
+  <span class="k">def</span> <span class="n">first</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+
+  <span class="c1">// return the next neighbor of v after w</span>
+  <span class="k">def</span> <span class="n">next</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">w</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+
+  <span class="k">def</span> <span class="n">setEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">w</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
+
+  <span class="k">def</span> <span class="n">delEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
+
+  <span class="k">def</span> <span class="n">isEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span>
+
+  <span class="k">def</span> <span class="n">weight</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+
+  <span class="k">def</span> <span class="n">setMark</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">value</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
+
+  <span class="k">def</span> <span class="n">getMark</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1048,12 +1064,32 @@ h6:hover .anchor-link {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>defined <span class="ansi-green-fg">trait</span> <span class="ansi-cyan-fg">GraphADT</span></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>Binary search</h2>
+<h2>Adjacency matrix</h2>
 </div>
 </div>
 </div>
@@ -1061,32 +1097,63 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>When the array containing elements is sorted, we can do much more efficient search than sequential search. Binary search takes the middle element in the array, and if it is bigger than the element we want to find, then search the former half of the array. If it is smaller, then search the latter half.</p>
+<p>We can store all of the information of a graph by matrix, which is two-dimensional array. If there are $V$ vertices and $E$ edges, then the size of the matrix is $V^2$ and $E$ points are filled with the weight or distance of two corresponding vertices. It needs $\Theta(V^2)$ space, and since the maximum number of edges is $V^2 - V$, it becomes space efficient when there are many edges compared to the vertices.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">BinarySearch</span> <span class="o">{</span>
-  <span class="c1">// We assume input array is sorted!</span>
-  <span class="k">def</span> <span class="n">search</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span> <span class="n">target</span><span class="k">:</span> <span class="kt">T</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">var</span> <span class="n">low</span> <span class="k">=</span> <span class="mi">0</span>
-    <span class="k">var</span> <span class="n">high</span> <span class="k">=</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">while</span><span class="o">(</span><span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">mid</span> <span class="k">=</span> <span class="o">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span>
-      <span class="k">val</span> <span class="n">comp</span> <span class="k">=</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">array</span><span class="o">(</span><span class="n">mid</span><span class="o">))</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">comp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">high</span> <span class="k">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">comp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">low</span> <span class="k">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
-      <span class="k">else</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="kc">true</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="kc">false</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">class</span> <span class="nc">MatrixGraph</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">GraphADT</span> <span class="o">{</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="n">matrix</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">.</span><span class="n">ofDim</span><span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="n">n</span><span class="o">)</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="n">mark</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="n">n</span><span class="o">)</span>
+  <span class="k">private</span> <span class="k">var</span> <span class="n">numEdge</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="k">def</span> <span class="n">numVertices</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">mark</span><span class="o">.</span><span class="n">length</span>
+
+  <span class="k">def</span> <span class="n">numEdges</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">numEdge</span>
+
+  <span class="k">def</span> <span class="n">first</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">mark</span><span class="o">.</span><span class="n">indices</span><span class="o">)</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">v</span><span class="o">)(</span><span class="n">i</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="nc">Some</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+    <span class="nc">None</span>
   <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">next</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">w</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="n">w</span> <span class="o">+</span> <span class="mi">1</span> <span class="n">until</span> <span class="n">mark</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">v</span><span class="o">)(</span><span class="n">i</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="nc">Some</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+    <span class="nc">None</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">setEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">w</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="n">w</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span>
+      <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">s</span><span class="o">)(</span><span class="n">g</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="n">numEdge</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">matrix</span><span class="o">(</span><span class="n">s</span><span class="o">)(</span><span class="n">g</span><span class="o">)</span> <span class="k">=</span> <span class="n">w</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">delEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">s</span><span class="o">)(</span><span class="n">g</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="n">numEdge</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">matrix</span><span class="o">(</span><span class="n">s</span><span class="o">)(</span><span class="n">g</span><span class="o">)</span> <span class="k">=</span> <span class="mi">0</span>
+  <span class="o">}</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">isEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">(</span><span class="n">s</span><span class="o">)(</span><span class="n">g</span><span class="o">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">weight</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="n">matrix</span><span class="o">(</span><span class="n">s</span><span class="o">)(</span><span class="n">g</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+      <span class="k">case</span> <span class="n">value</span> <span class="k">=&gt;</span> <span class="nc">Some</span><span class="o">(</span><span class="n">value</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">setMark</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">value</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">mark</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="k">=</span> <span class="n">value</span>
+
+  <span class="k">def</span> <span class="n">getMark</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">mark</span><span class="o">(</span><span class="n">v</span><span class="o">)</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1094,12 +1161,32 @@ h6:hover .anchor-link {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">MatrixGraph</span></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1>Peak finding problem</h1>
+<h2>Adjacency list</h2>
 </div>
 </div>
 </div>
@@ -1107,41 +1194,76 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2>1-D</h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Binary search not only be applied to searching sorted array. Here we consider how to find the i-th element in an array such that $a_{i-1} \leq a_i$ and $a_i \geq a_{i+1}$</p>
+<p>When graph has many edges, and the state is called dense, representation using adjavenvy matrix is space efficient. However, in the practical situation, graphs are often sparse, thsat is, there are small number of edges compared to the vertices.</p>
+<p>Adjacency list representation store all the vertices in an array of linked lists. The elements of the linked lists are information of edges.
+This allows us to represent a graph using $\Theta(V + E)$ space.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">OneDPeak</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">searchPeak</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">array</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">var</span> <span class="n">low</span> <span class="k">=</span> <span class="mi">0</span>
-    <span class="k">var</span> <span class="n">high</span> <span class="k">=</span> <span class="n">array</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">while</span><span class="o">(</span><span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">mid</span> <span class="k">=</span> <span class="o">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span>
-      <span class="k">val</span> <span class="n">compLeft</span> <span class="k">=</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">mid</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="o">))</span>
-      <span class="k">val</span> <span class="n">compRight</span> <span class="k">=</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">mid</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">))</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">compLeft</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">high</span> <span class="k">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">compRight</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">low</span> <span class="k">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
-      <span class="k">else</span> <span class="k">return</span> <span class="n">mid</span>
-    <span class="o">}</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.collection.mutable</span>
 
-    <span class="c1">// If the program reaches here, elements to be searched are only low and high</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">low</span><span class="o">),</span> <span class="n">array</span><span class="o">(</span><span class="n">high</span><span class="o">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">low</span>
-    <span class="k">else</span> <span class="n">high</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Edge</span><span class="o">(</span><span class="n">vertex</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">weight</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+
+<span class="k">class</span> <span class="nc">ListGraph</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">GraphADT</span> <span class="o">{</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="n">vertex</span><span class="k">:</span> <span class="kt">mutable.ArrayBuffer</span><span class="o">[</span><span class="kt">mutable.MutableList</span><span class="o">[</span><span class="kt">Edge</span><span class="o">]]</span> <span class="k">=</span>
+    <span class="k">new</span> <span class="n">mutable</span><span class="o">.</span><span class="nc">ArrayBuffer</span><span class="o">[</span><span class="kt">mutable.MutableList</span><span class="o">[</span><span class="kt">Edge</span><span class="o">]](</span><span class="n">n</span><span class="o">)</span>
+  <span class="k">for</span><span class="o">(</span><span class="n">i</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">n</span><span class="o">)</span> <span class="n">vertex</span> <span class="o">+=</span> <span class="n">mutable</span><span class="o">.</span><span class="nc">MutableList</span><span class="o">[</span><span class="kt">Edge</span><span class="o">]()</span>
+  <span class="k">private</span> <span class="k">val</span> <span class="n">mark</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="n">n</span><span class="o">)</span>
+  <span class="k">private</span> <span class="k">var</span> <span class="n">numEdge</span> <span class="k">=</span> <span class="mi">0</span>
+
+  <span class="k">def</span> <span class="n">numVertices</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">mark</span><span class="o">.</span><span class="n">length</span>
+
+  <span class="k">def</span> <span class="n">numEdges</span><span class="o">()</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">numEdge</span>
+
+  <span class="k">def</span> <span class="n">first</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="n">vertex</span><span class="o">(</span><span class="n">v</span><span class="o">).</span><span class="n">isEmpty</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="kc">true</span> <span class="k">=&gt;</span> <span class="nc">None</span>
+      <span class="k">case</span> <span class="kc">false</span> <span class="k">=&gt;</span> <span class="nc">Some</span><span class="o">(</span><span class="n">vertex</span><span class="o">(</span><span class="n">v</span><span class="o">).</span><span class="n">head</span><span class="o">.</span><span class="n">vertex</span><span class="o">)</span>
+    <span class="o">}</span>
   <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">next</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">w</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">var</span> <span class="n">flag</span> <span class="k">=</span> <span class="kc">false</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">edge</span> <span class="k">&lt;-</span> <span class="n">vertex</span><span class="o">(</span><span class="n">v</span><span class="o">))</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">flag</span><span class="o">)</span> <span class="k">return</span> <span class="nc">Some</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="n">vertex</span><span class="o">)</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="n">vertex</span> <span class="o">==</span> <span class="n">w</span><span class="o">)</span> <span class="n">flag</span> <span class="k">=</span> <span class="kc">true</span>
+    <span class="o">}</span>
+    <span class="nc">None</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">setEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">w</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">edge</span> <span class="k">=</span> <span class="nc">Edge</span><span class="o">(</span><span class="n">g</span><span class="o">,</span> <span class="n">w</span><span class="o">)</span>
+    <span class="n">delEdge</span><span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="n">g</span><span class="o">)</span>
+    <span class="n">vertex</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">+=</span> <span class="n">edge</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">delEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">newList</span> <span class="k">=</span> <span class="n">vertex</span><span class="o">(</span><span class="n">s</span><span class="o">).</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">vertex</span> <span class="o">!=</span> <span class="n">g</span><span class="o">)</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">newList</span><span class="o">.</span><span class="n">length</span> <span class="o">&lt;</span> <span class="n">vertex</span><span class="o">(</span><span class="n">s</span><span class="o">).</span><span class="n">length</span><span class="o">)</span> <span class="n">numEdge</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">vertex</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="k">=</span> <span class="n">newList</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">isEdge</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">edge</span> <span class="k">&lt;-</span> <span class="n">vertex</span><span class="o">(</span><span class="n">s</span><span class="o">))</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="n">vertex</span> <span class="o">==</span> <span class="n">g</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span>
+    <span class="k">return</span> <span class="kc">false</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">weight</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">g</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">edge</span> <span class="k">&lt;-</span> <span class="n">vertex</span><span class="o">(</span><span class="n">s</span><span class="o">))</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="n">vertex</span> <span class="o">==</span> <span class="n">g</span><span class="o">)</span> <span class="k">return</span> <span class="nc">Some</span><span class="o">(</span><span class="n">edge</span><span class="o">.</span><span class="n">weight</span><span class="o">)</span>
+    <span class="nc">None</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">setMark</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">value</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">mark</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="k">=</span> <span class="n">value</span>
+
+  <span class="k">def</span> <span class="n">getMark</span><span class="o">(</span><span class="n">v</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">mark</span><span class="o">(</span><span class="n">v</span><span class="o">)</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -1149,66 +1271,27 @@ h6:hover .anchor-link {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre><span class="ansi-green-fg">import </span><span class="ansi-cyan-fg">scala.collection.mutable
+
+</span>
+defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Edge</span>
+defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">ListGraph</span></pre>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>2-D</p>
 
 </div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>2-D version of the algorithm is not a straightforward binary search. It have to take following steps.</p>
-<ol>
-<li>Pick the middle column.</li>
-<li>Find the global maximum element in the column.</li>
-<li>If it is the peak, end search.</li>
-<li>If not, limit the search range to the left half if the element to the left is bigger, or limit to the right half it the element to the right is smaller.</li>
-<li>return to 1.</li>
-</ol>
-<p>The correctness of the algorithm can be shown with proof by contradiction.</p>
-<p>Let the width and the height of the 2-D array be m and n. Since step 2 takes $\Theta(n)$ time and the steps repeat $\Theta(\log m)$ time in the worst cases, the time complexity of the algorithm for the worst cases is $\Theta(n\log m)$.</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">object</span> <span class="nc">TwoDPeak</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">searchPeak</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">matrix</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">T</span><span class="o">]])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="o">(</span><span class="kt">Int</span><span class="o">,</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
-    <span class="k">var</span> <span class="n">low</span> <span class="k">=</span> <span class="mi">0</span>
-    <span class="k">var</span> <span class="n">high</span> <span class="k">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">while</span> <span class="o">(</span><span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">mid</span> <span class="k">=</span> <span class="o">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span>
-      <span class="k">val</span> <span class="n">array</span> <span class="k">=</span> <span class="n">matrix</span><span class="o">(</span><span class="n">mid</span><span class="o">)</span>
-      <span class="k">val</span> <span class="n">maxIndex</span> <span class="k">=</span> <span class="n">array</span><span class="o">.</span><span class="n">indexOf</span><span class="o">(</span><span class="n">array</span><span class="o">.</span><span class="n">max</span><span class="o">)</span>
-      <span class="k">val</span> <span class="n">compAbove</span> <span class="k">=</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">maxIndex</span><span class="o">),</span> <span class="n">matrix</span><span class="o">(</span><span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)(</span><span class="n">maxIndex</span><span class="o">))</span>
-      <span class="k">val</span> <span class="n">compBelow</span> <span class="k">=</span> <span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">array</span><span class="o">(</span><span class="n">maxIndex</span><span class="o">),</span> <span class="n">matrix</span><span class="o">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)(</span><span class="n">maxIndex</span><span class="o">))</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">compAbove</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">high</span> <span class="k">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">compBelow</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="n">low</span> <span class="k">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
-      <span class="k">else</span> <span class="k">return</span> <span class="o">(</span><span class="n">mid</span><span class="o">,</span> <span class="n">maxIndex</span><span class="o">)</span>
-    <span class="o">}</span>
-
-    <span class="k">if</span> <span class="o">(</span><span class="n">low</span> <span class="o">==</span> <span class="n">high</span><span class="o">)</span> <span class="o">(</span><span class="n">low</span><span class="o">,</span> <span class="n">matrix</span><span class="o">(</span><span class="n">low</span><span class="o">).</span><span class="n">indexOf</span><span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">low</span><span class="o">).</span><span class="n">max</span><span class="o">))</span>
-    <span class="k">else</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">maxLow</span> <span class="k">=</span> <span class="n">matrix</span><span class="o">(</span><span class="n">low</span><span class="o">).</span><span class="n">indexOf</span><span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">low</span><span class="o">).</span><span class="n">max</span><span class="o">)</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">ordering</span><span class="o">.</span><span class="n">compare</span><span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">low</span><span class="o">)(</span><span class="n">maxLow</span><span class="o">),</span> <span class="n">matrix</span><span class="o">(</span><span class="n">high</span><span class="o">)(</span><span class="n">maxLow</span><span class="o">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span>
-        <span class="k">return</span> <span class="o">(</span><span class="n">low</span><span class="o">,</span> <span class="n">maxLow</span><span class="o">)</span>
-      <span class="o">(</span><span class="n">high</span><span class="o">,</span> <span class="n">matrix</span><span class="o">(</span><span class="n">high</span><span class="o">).</span><span class="n">indexOf</span><span class="o">(</span><span class="n">matrix</span><span class="o">(</span><span class="n">high</span><span class="o">).</span><span class="n">max</span><span class="o">))</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
@@ -1250,6 +1333,55 @@ h6:hover .anchor-link {
                     <h1>Other articles</h1>
                     <hr />
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/Searching Arrays and Peak Finding.html" rel="bookmark"
+                           title="Permalink to Searching Arrays and Peak Finding">Searching Arrays and Peak Finding</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-01-28T00:00:00+09:00">
+                Published: Sun 28 January 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
+        </address>
+<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
+<p>tags: <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
+</footer><!-- /.post-info -->                
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1>Searching (un)sorted array</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2>Sequential search</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When searching unsorted array for some element, only what we can do is sequential search, which we take elements in the array one by one and check if it's the one we are searching for.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+                <a class="readmore" href="/Searching Arrays and Peak Finding.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
