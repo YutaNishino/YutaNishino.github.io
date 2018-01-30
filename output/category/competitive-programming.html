@@ -21,7 +21,120 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/ABC086D.html">ABC086D</a></h1>
+                    <h1 class="entry-title"><a href="/ABC015C.html">ABC015C</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2018-01-30T19:00:00+09:00">
+                Published: Tue 30 January 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
+        </address>
+<p>In <a href="/category/competitive-programming.html">Competitive programming</a>.</p>
+<p>tags: <a href="/tag/dfs.html">DFS</a> <a href="/tag/recursion.html">recursion</a> <a href="/tag/pruning.html">pruning</a> <a href="/tag/java.html">Java</a> </p>
+</footer><!-- /.post-info --><p>I solved the problem with DFS using recursion, stack and stack with pruning.</p>
+<p>Main part</p>
+<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+    <span class="kn">import</span> <span class="nn">java.util.Stack</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ABC015C</span> <span class="o">{</span>
+        <span class="kd">static</span> <span class="kt">int</span> <span class="n">n</span><span class="o">,</span> <span class="n">k</span><span class="o">;</span>
+        <span class="kd">static</span> <span class="kt">int</span><span class="o">[][]</span> <span class="n">field</span><span class="o">;</span>
+        <span class="kd">static</span> <span class="kt">boolean</span><span class="o">[][]</span> <span class="n">visited</span><span class="o">;</span>
+        <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+            <span class="n">Scanner</span> <span class="n">sc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">n</span><span class="o">][</span><span class="n">k</span><span class="o">];</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+                    <span class="n">field</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">field</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span> <span class="n">max</span> <span class="o">=</span> <span class="n">field</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="n">visited</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="o">][(</span><span class="n">max</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">];</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">))</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Found&quot;</span><span class="o">);</span>
+            <span class="k">else</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Nothing&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Tuple</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
+            <span class="kd">final</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+            <span class="n">Tuple</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</pre></div>
+
+
+<p>DFS using recursion</p>
+<div class="highlight"><pre><span></span>    <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">int</span> <span class="n">numQ</span><span class="o">,</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">numQ</span> <span class="o">==</span> <span class="n">n</span><span class="o">)</span> <span class="k">return</span> <span class="o">(</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="n">numQ</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">value</span><span class="o">^</span><span class="n">field</span><span class="o">[</span><span class="n">numQ</span><span class="o">][</span><span class="n">i</span><span class="o">]))</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>
+
+
+<p>DFS using stack</p>
+<div class="highlight"><pre><span></span>    static boolean dfs(int numQ, int value) {
+        Stack&lt;Tuple&gt; s = new Stack&lt;&gt;();
+        s.push(new Tuple(numQ, value));
+        while (!s.empty()) {
+            Tuple t = s.pop();
+            for (int i = 0; i &lt; k; i++) {
+                if (t.x == n) {
+                    if (t.y == 0) return true;
+                    else continue;
+                }
+                s.push(new Tuple(t.x + 1, t.y ^ field[t.x][i]));
+            }
+        }
+        return false;
+    }
+</pre></div>
+
+
+<p>DFS using stack with pruning</p>
+<div class="highlight"><pre><span></span>    <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">int</span> <span class="n">startQuestion</span><span class="o">,</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Stack</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;();</span>
+        <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">startQuestion</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">s</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">Tuple</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">==</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                    <span class="k">else</span> <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="kt">int</span> <span class="n">nextX</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+                <span class="kt">int</span> <span class="n">nextY</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">^</span> <span class="n">field</span><span class="o">[</span><span class="n">t</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">i</span><span class="o">];</span>
+                <span class="k">if</span> <span class="o">(!</span><span class="n">visited</span><span class="o">[</span><span class="n">nextX</span><span class="o">][</span><span class="n">nextY</span><span class="o">])</span> <span class="o">{</span>
+                    <span class="n">visited</span><span class="o">[</span><span class="n">nextX</span><span class="o">][</span><span class="n">nextY</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                    <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">nextX</span><span class="o">,</span> <span class="n">nextY</span><span class="o">));</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/ABC086D.html" rel="bookmark"
+                           title="Permalink to ABC086D">ABC086D</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-01-27T17:00:00+09:00">
                 Published: Sat 27 January 2018
@@ -32,69 +145,14 @@
         </address>
 <p>In <a href="/category/competitive-programming.html">Competitive programming</a>.</p>
 <p>tags: <a href="/tag/imos.html">imos</a> <a href="/tag/java.html">Java</a> </p>
-</footer><!-- /.post-info --><p>First, we can treat x and y as x modulo 2K and y modulo 2K.</p>
+</footer><!-- /.post-info -->                <p>First, we can treat x and y as x modulo 2K and y modulo 2K.</p>
 <p>I used imos method <a href="https://imoz.jp/algorithms/imos_method.html">https://imoz.jp/algorithms/imos_method.html</a> to count up the number in the array.
-After that, the array is folded back so that the cases where x &gt;= 2<em>K and y &gt;= 2</em>K hold are added up.</p>
-<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ABC086D</span> <span class="o">{</span>
-        <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
-            <span class="n">Scanner</span> <span class="n">sc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
-            <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-            <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-            <span class="kt">int</span><span class="o">[][]</span> <span class="n">count</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">4</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="o">][</span><span class="mi">4</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
-
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-                <span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-                <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">next</span><span class="o">().</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
-                <span class="c1">// convert white into black to regard every wish to be black</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;W&#39;</span><span class="o">)</span> <span class="n">y</span> <span class="o">+=</span> <span class="n">k</span><span class="o">;</span>
-
-                <span class="c1">// want (x, y) to be black</span>
-                <span class="n">x</span> <span class="o">%=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">;</span>
-                <span class="n">y</span> <span class="o">%=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">;</span>
-
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]++;</span>
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span> <span class="o">+</span> <span class="n">k</span><span class="o">]--;</span>
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">k</span><span class="o">][</span><span class="n">y</span><span class="o">]--;</span>
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">k</span><span class="o">][</span><span class="n">y</span> <span class="o">+</span> <span class="n">k</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">;</span>
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">][</span><span class="n">y</span> <span class="o">+</span> <span class="n">k</span><span class="o">]--;</span>
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">k</span><span class="o">][</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">]--;</span>
-                <span class="n">count</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">][</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">]++;</span>
-            <span class="o">}</span>
-
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">row</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">col</span><span class="o">++)</span> <span class="o">{</span>
-                    <span class="n">count</span><span class="o">[</span><span class="n">col</span><span class="o">][</span><span class="n">row</span><span class="o">]</span> <span class="o">+=</span> <span class="n">count</span><span class="o">[</span><span class="n">col</span> <span class="o">-</span> <span class="mi">1</span><span class="o">][</span><span class="n">row</span><span class="o">];</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">col</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">row</span><span class="o">++)</span> <span class="o">{</span>
-                    <span class="n">count</span><span class="o">[</span><span class="n">col</span><span class="o">][</span><span class="n">row</span><span class="o">]</span> <span class="o">+=</span> <span class="n">count</span><span class="o">[</span><span class="n">col</span><span class="o">][</span><span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="o">];</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
-                    <span class="k">if</span> <span class="o">(</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">)</span> <span class="k">continue</span><span class="o">;</span>
-                    <span class="n">count</span><span class="o">[</span><span class="n">i</span> <span class="o">%</span> <span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">)][</span><span class="n">j</span> <span class="o">%</span> <span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">)]</span> <span class="o">+=</span> <span class="n">count</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-
-            <span class="kt">int</span> <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">row</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">col</span><span class="o">++)</span> <span class="o">{</span>
-                    <span class="c1">//System.out.printf(&quot;%d &quot;, count[col][row]);</span>
-                    <span class="n">ans</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">ans</span><span class="o">,</span> <span class="n">count</span><span class="o">[</span><span class="n">col</span><span class="o">][</span><span class="n">row</span><span class="o">]);</span>
-                <span class="o">}</span>
-                <span class="c1">//System.out.println();</span>
-            <span class="o">}</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ans</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-</pre></div>                </article>
-            </aside><!-- /#featured -->
+After that, the array is folded back so that the cases where x &gt;= 2<em>K and y …</em></p>
+                <a class="readmore" href="/ABC086D.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
         </section><!-- /#extras -->
 
