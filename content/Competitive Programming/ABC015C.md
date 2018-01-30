@@ -55,7 +55,7 @@ DFS using recursion
 ```
 
 DFS using stack
-```
+```java
     static boolean dfs(int numQ, int value) {
         Stack<Tuple> s = new Stack<>();
         s.push(new Tuple(numQ, value));
