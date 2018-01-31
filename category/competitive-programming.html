@@ -14,6 +14,7 @@
         <header id="banner" class="body">
                 <h1><a href="/">Yuta Nishino </a></h1>
                 <nav><ul>
+                    <li><a href="/pages/About.html">About</a></li>
                     <li class="active"><a href="/category/competitive-programming.html">Competitive programming</a></li>
                     <li><a href="/category/computer-science.html">Computer Science</a></li>
                 </ul></nav>
@@ -82,21 +83,21 @@
 
 
 <p>DFS using stack</p>
-<div class="highlight"><pre><span></span>    static boolean dfs(int numQ, int value) {
-        Stack&lt;Tuple&gt; s = new Stack&lt;&gt;();
-        s.push(new Tuple(numQ, value));
-        while (!s.empty()) {
-            Tuple t = s.pop();
-            for (int i = 0; i &lt; k; i++) {
-                if (t.x == n) {
-                    if (t.y == 0) return true;
-                    else continue;
-                }
-                s.push(new Tuple(t.x + 1, t.y ^ field[t.x][i]));
-            }
-        }
-        return false;
-    }
+<div class="highlight"><pre><span></span>    <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">int</span> <span class="n">numQ</span><span class="o">,</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Stack</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;();</span>
+        <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">numQ</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">s</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">Tuple</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">==</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                    <span class="k">else</span> <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">^</span> <span class="n">field</span><span class="o">[</span><span class="n">t</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">i</span><span class="o">]));</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
 </pre></div>
 
 
