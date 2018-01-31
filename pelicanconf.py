@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+import os
 import time
 
 COPYRIGHT_YEAR = time.strftime("%Y")
@@ -34,5 +35,6 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 
 MARKUP = ('md', 'ipynb')
-PLUGIN_PATHS = ['./plugins']
-PLUGINS = ['ipynb.markup']
+git = os.environ['HOME'] + '/git'
+PLUGIN_PATHS = [git + '/pelican-plugins', './plugins']
+PLUGINS = ['render_math', 'ipynb.markup']
