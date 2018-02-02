@@ -22,7 +22,116 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/ABC015C.html">ABC015C</a></h1>
+                    <h1 class="entry-title"><a href="/Two-way BFS on 222 rubik's cube.html">Two-way BFS on 2 by 2 by 2 rubik's cube</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2018-02-22T20:00:00+09:00">
+                Published: Thu 22 February 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
+        </address>
+<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
+<p>tags: <a href="/tag/bfs.html">BFS</a> <a href="/tag/rubiks-cube.html">Rubik&#39;s cube</a> <a href="/tag/python.html">Python</a> </p>
+</footer><!-- /.post-info --><p>If you are doing breadth first search and are finding the shortest path to the state you know how to represent it and that there is only one such state, then two-way BFS could be applied.<br>
+It searches the graph from start state and end state and if the frontier of the searched cross, you can track the shortest path.</p>
+<p>One example you can apply it is solving two-way rubik's cube.<br>
+This is actually an assignment to <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/">https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/</a>.
+So for the rubik library in the below code, you can find it from the link.</p>
+<p>Note that when there is no solution, that is, when end state is unreachable from the start state, two-way BFS gives no speedup. On the contrary, it searches the whole graph twice.</p>
+<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">Queue</span>
+
+    <span class="kn">import</span> <span class="nn">rubik</span>
+
+    <span class="k">def</span> <span class="nf">track_moves</span><span class="p">(</span><span class="n">parent_primary</span><span class="p">,</span> <span class="n">parent_secondary</span><span class="p">,</span> <span class="n">last_position</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">start</span><span class="p">:</span>
+            <span class="n">parent_from_start</span> <span class="o">=</span> <span class="n">parent_primary</span>
+            <span class="n">parent_from_end</span> <span class="o">=</span> <span class="n">parent_secondary</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parent_from_start</span> <span class="o">=</span> <span class="n">parent_secondary</span>
+            <span class="n">parent_from_end</span> <span class="o">=</span> <span class="n">parent_primary</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">last_position</span>
+        <span class="n">moves</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="n">parent_from_start</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">position</span><span class="p">,</span> <span class="n">twist</span> <span class="o">=</span> <span class="n">parent_from_start</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="n">moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">twist</span><span class="p">)</span>
+        <span class="c1"># reverse list</span>
+        <span class="n">moves</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="n">last_position</span>
+        <span class="k">while</span> <span class="n">parent_from_end</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">position</span><span class="p">,</span> <span class="n">twist</span> <span class="o">=</span> <span class="n">parent_from_end</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="n">moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">twist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">moves</span>
+
+    <span class="k">def</span> <span class="nf">bfs_routine</span><span class="p">(</span><span class="n">parent_primary</span><span class="p">,</span> <span class="n">parent_secondary</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">next_positions</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rubik</span><span class="o">.</span><span class="n">perm_apply</span><span class="p">(</span><span class="n">twist</span><span class="p">,</span> <span class="n">position</span><span class="p">),</span> <span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">twist</span> <span class="ow">in</span> 
+            <span class="n">rubik</span><span class="o">.</span><span class="n">quarter_twists</span><span class="p">]</span> <span class="k">if</span> <span class="n">start</span> <span class="k">else</span> \
+                <span class="p">[(</span><span class="n">rubik</span><span class="o">.</span><span class="n">perm_apply</span><span class="p">(</span><span class="n">rubik</span><span class="o">.</span><span class="n">perm_inverse</span><span class="p">(</span><span class="n">twist</span><span class="p">),</span> <span class="n">position</span><span class="p">),</span> <span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">twist</span> <span class="ow">in</span> 
+                    <span class="n">rubik</span><span class="o">.</span><span class="n">quarter_twists</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">next_position</span><span class="p">,</span> <span class="n">twist</span> <span class="ow">in</span> <span class="n">next_positions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">next_position</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent_primary</span><span class="p">:</span>
+                <span class="n">parent_primary</span><span class="p">[</span><span class="n">next_position</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">twist</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">next_position</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">next_position</span> <span class="ow">in</span> <span class="n">parent_secondary</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">next_position</span>
+            <span class="k">return</span> <span class="n">track_moves</span><span class="p">(</span><span class="n">parent_primary</span><span class="p">,</span> <span class="n">parent_secondary</span><span class="p">,</span>
+                <span class="n">next_position</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">shortest_path</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Using 2-way BFS, finds the shortest path from start_position to</span>
+<span class="sd">        end_position. Returns a list of moves. </span>
+
+<span class="sd">        You can use the rubik.quarter_twists move set.</span>
+<span class="sd">        Each move can be applied using rubik.perm_apply</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># answer is a list of rubik.quarter_twists moves</span>
+        <span class="c1"># each of which is a permutation corresponding to a move on a pocket cube</span>
+
+        <span class="c1"># next states from one is generated by perm_apply(t, position)</span>
+        <span class="c1"># where t is an element of rubik.quarter_twists and current position</span>
+        <span class="c1"># that is a permutaitonf a tuple of length 24 whose element is 0..23</span>
+
+        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="n">end</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">parent_from_start</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">parent_from_end</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">queue_start</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="n">queue_end</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="n">queue_start</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">queue_end</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="n">parent_from_start</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">parent_from_end</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">queue_start</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">queue_end</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">start_result</span> <span class="o">=</span> <span class="n">bfs_routine</span><span class="p">(</span><span class="n">parent_from_start</span><span class="p">,</span> <span class="n">parent_from_end</span><span class="p">,</span>
+                <span class="n">queue_start</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">start_result</span>
+            <span class="n">end_result</span> <span class="o">=</span> <span class="n">bfs_routine</span><span class="p">(</span><span class="n">parent_from_end</span><span class="p">,</span> <span class="n">parent_from_start</span><span class="p">,</span>
+                <span class="n">queue_end</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">end_result</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/ABC015C.html" rel="bookmark"
+                           title="Permalink to ABC015C">ABC015C</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-01-30T19:00:00+09:00">
                 Published: Tue 30 January 2018
@@ -33,7 +142,7 @@
         </address>
 <p>In <a href="/category/competitive-programming.html">Competitive programming</a>.</p>
 <p>tags: <a href="/tag/dfs.html">DFS</a> <a href="/tag/recursion.html">recursion</a> <a href="/tag/pruning.html">pruning</a> <a href="/tag/java.html">Java</a> </p>
-</footer><!-- /.post-info --><p>I solved the problem with DFS using recursion, stack and stack with pruning.</p>
+</footer><!-- /.post-info -->                <p>I solved the problem with DFS using recursion, stack and stack with pruning.</p>
 <p>Main part</p>
 <div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
     <span class="kn">import</span> <span class="nn">java.util.Stack</span><span class="o">;</span>
@@ -44,90 +153,10 @@
         <span class="kd">static</span> <span class="kt">boolean</span><span class="o">[][]</span> <span class="n">visited</span><span class="o">;</span>
         <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
             <span class="n">Scanner</span> <span class="n">sc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-            <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-            <span class="n">field</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">n</span><span class="o">][</span><span class="n">k</span><span class="o">];</span>
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
-                    <span class="n">field</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">field</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span> <span class="n">max</span> <span class="o">=</span> <span class="n">field</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-            <span class="n">visited</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="o">][(</span><span class="n">max</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">];</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">))</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Found&quot;</span><span class="o">);</span>
-            <span class="k">else</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Nothing&quot;</span><span class="o">);</span>
-        <span class="o">}</span>
-
-        <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Tuple</span> <span class="o">{</span>
-            <span class="kd">final</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
-            <span class="kd">final</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
-            <span class="n">Tuple</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-                <span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-</pre></div>
-
-
-<p>DFS using recursion</p>
-<div class="highlight"><pre><span></span>    <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">int</span> <span class="n">numQ</span><span class="o">,</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">numQ</span> <span class="o">==</span> <span class="n">n</span><span class="o">)</span> <span class="k">return</span> <span class="o">(</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="o">);</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">dfs</span><span class="o">(</span><span class="n">numQ</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">value</span><span class="o">^</span><span class="n">field</span><span class="o">[</span><span class="n">numQ</span><span class="o">][</span><span class="n">i</span><span class="o">]))</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-    <span class="o">}</span>
-</pre></div>
-
-
-<p>DFS using stack</p>
-<div class="highlight"><pre><span></span>    <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">int</span> <span class="n">numQ</span><span class="o">,</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Stack</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;();</span>
-        <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">numQ</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
-        <span class="k">while</span> <span class="o">(!</span><span class="n">s</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span> <span class="o">{</span>
-            <span class="n">Tuple</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">==</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-                    <span class="k">else</span> <span class="k">continue</span><span class="o">;</span>
-                <span class="o">}</span>
-                <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">^</span> <span class="n">field</span><span class="o">[</span><span class="n">t</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">i</span><span class="o">]));</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-    <span class="o">}</span>
-</pre></div>
-
-
-<p>DFS using stack with pruning</p>
-<div class="highlight"><pre><span></span>    <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">dfs</span><span class="o">(</span><span class="kt">int</span> <span class="n">startQuestion</span><span class="o">,</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Stack</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;();</span>
-        <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">startQuestion</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
-        <span class="k">while</span> <span class="o">(!</span><span class="n">s</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span> <span class="o">{</span>
-            <span class="n">Tuple</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
-            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">==</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-                    <span class="k">else</span> <span class="k">continue</span><span class="o">;</span>
-                <span class="o">}</span>
-                <span class="kt">int</span> <span class="n">nextX</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-                <span class="kt">int</span> <span class="n">nextY</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="na">y</span> <span class="o">^</span> <span class="n">field</span><span class="o">[</span><span class="n">t</span><span class="o">.</span><span class="na">x</span><span class="o">][</span><span class="n">i</span><span class="o">];</span>
-                <span class="k">if</span> <span class="o">(!</span><span class="n">visited</span><span class="o">[</span><span class="n">nextX</span><span class="o">][</span><span class="n">nextY</span><span class="o">])</span> <span class="o">{</span>
-                    <span class="n">visited</span><span class="o">[</span><span class="n">nextX</span><span class="o">][</span><span class="n">nextY</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-                    <span class="n">s</span><span class="o">.</span><span class="na">push</span><span class="o">(</span><span class="k">new</span> <span class="n">Tuple</span><span class="o">(</span><span class="n">nextX</span><span class="o">,</span> <span class="n">nextY</span><span class="o">));</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-    <span class="o">}</span>
-</pre></div>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+            <span class="n">n</span> <span class="o">=</span> <span class="n">sc …</span></pre></div>
+                <a class="readmore" href="/ABC015C.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -442,42 +471,6 @@ After that, the array is folded back so that the cases where x &gt;= 2<em>K and 
 <p>Like stack, queue is a data structure that have ADT restricted compared with one of list. Queue can perform the operation that append an element at the rear of the queue and remove and return the element at the front.
 There is a data structure containing queue as a special case and it is called deque (double-ended queue). Deque can perform adding an element at the front of the queue and removing at the rear as well as all operations queue can.</p>
                 <a class="readmore" href="/Queues.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Stacks.html" rel="bookmark"
-                           title="Permalink to Stacks and imitating recursion">Stacks and imitating recursion</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-10T17:00:00+09:00">
-                Published: Wed 10 January 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
-        </address>
-<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
-<p>tags: <a href="/tag/data-structure.html">Data structure</a> <a href="/tag/algorithm.html">Algorithm</a> <a href="/tag/scala.html">Scala</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1>Stacks</h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Stack is a data structure that can perform a part of the operation that lists can. We can take only the last element appended to the stack. The operation taking out the element is called "pop", and appending the element is called "push". It sounds like there is no use for stacks, however, stacks can perform those operations more efficiently than lists. This is another kind of tradeoff we saw for lists.
-Analogous to lists, stacks can be implemented as array-based and linked-stack. And the implementations are quite simple.</p>
-                <a class="readmore" href="/Stacks.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Yuta Nishino - Python</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Yuta Nishino </a></h1>
+                <nav><ul>
+                    <li><a href="/pages/About.html">About</a></li>
+                    <li><a href="/category/competitive-programming.html">Competitive programming</a></li>
+                    <li><a href="/category/computer-science.html">Computer Science</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/Two-way BFS on 222 rubik's cube.html">Two-way BFS on 2 by 2 by 2 rubik's cube</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2018-02-22T20:00:00+09:00">
+                Published: Thu 22 February 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuta-nishino.html">Yuta Nishino</a>
+        </address>
+<p>In <a href="/category/computer-science.html">Computer Science</a>.</p>
+<p>tags: <a href="/tag/bfs.html">BFS</a> <a href="/tag/rubiks-cube.html">Rubik&#39;s cube</a> <a href="/tag/python.html">Python</a> </p>
+</footer><!-- /.post-info --><p>If you are doing breadth first search and are finding the shortest path to the state you know how to represent it and that there is only one such state, then two-way BFS could be applied.<br>
+It searches the graph from start state and end state and if the frontier of the searched cross, you can track the shortest path.</p>
+<p>One example you can apply it is solving two-way rubik's cube.<br>
+This is actually an assignment to <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/">https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/</a>.
+So for the rubik library in the below code, you can find it from the link.</p>
+<p>Note that when there is no solution, that is, when end state is unreachable from the start state, two-way BFS gives no speedup. On the contrary, it searches the whole graph twice.</p>
+<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">Queue</span>
+
+    <span class="kn">import</span> <span class="nn">rubik</span>
+
+    <span class="k">def</span> <span class="nf">track_moves</span><span class="p">(</span><span class="n">parent_primary</span><span class="p">,</span> <span class="n">parent_secondary</span><span class="p">,</span> <span class="n">last_position</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">start</span><span class="p">:</span>
+            <span class="n">parent_from_start</span> <span class="o">=</span> <span class="n">parent_primary</span>
+            <span class="n">parent_from_end</span> <span class="o">=</span> <span class="n">parent_secondary</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parent_from_start</span> <span class="o">=</span> <span class="n">parent_secondary</span>
+            <span class="n">parent_from_end</span> <span class="o">=</span> <span class="n">parent_primary</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">last_position</span>
+        <span class="n">moves</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="n">parent_from_start</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">position</span><span class="p">,</span> <span class="n">twist</span> <span class="o">=</span> <span class="n">parent_from_start</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="n">moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">twist</span><span class="p">)</span>
+        <span class="c1"># reverse list</span>
+        <span class="n">moves</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="n">last_position</span>
+        <span class="k">while</span> <span class="n">parent_from_end</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">position</span><span class="p">,</span> <span class="n">twist</span> <span class="o">=</span> <span class="n">parent_from_end</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="n">moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">twist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">moves</span>
+
+    <span class="k">def</span> <span class="nf">bfs_routine</span><span class="p">(</span><span class="n">parent_primary</span><span class="p">,</span> <span class="n">parent_secondary</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">next_positions</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rubik</span><span class="o">.</span><span class="n">perm_apply</span><span class="p">(</span><span class="n">twist</span><span class="p">,</span> <span class="n">position</span><span class="p">),</span> <span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">twist</span> <span class="ow">in</span> 
+            <span class="n">rubik</span><span class="o">.</span><span class="n">quarter_twists</span><span class="p">]</span> <span class="k">if</span> <span class="n">start</span> <span class="k">else</span> \
+                <span class="p">[(</span><span class="n">rubik</span><span class="o">.</span><span class="n">perm_apply</span><span class="p">(</span><span class="n">rubik</span><span class="o">.</span><span class="n">perm_inverse</span><span class="p">(</span><span class="n">twist</span><span class="p">),</span> <span class="n">position</span><span class="p">),</span> <span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">twist</span> <span class="ow">in</span> 
+                    <span class="n">rubik</span><span class="o">.</span><span class="n">quarter_twists</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">next_position</span><span class="p">,</span> <span class="n">twist</span> <span class="ow">in</span> <span class="n">next_positions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">next_position</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent_primary</span><span class="p">:</span>
+                <span class="n">parent_primary</span><span class="p">[</span><span class="n">next_position</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">twist</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">next_position</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">next_position</span> <span class="ow">in</span> <span class="n">parent_secondary</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">next_position</span>
+            <span class="k">return</span> <span class="n">track_moves</span><span class="p">(</span><span class="n">parent_primary</span><span class="p">,</span> <span class="n">parent_secondary</span><span class="p">,</span>
+                <span class="n">next_position</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">shortest_path</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Using 2-way BFS, finds the shortest path from start_position to</span>
+<span class="sd">        end_position. Returns a list of moves. </span>
+
+<span class="sd">        You can use the rubik.quarter_twists move set.</span>
+<span class="sd">        Each move can be applied using rubik.perm_apply</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># answer is a list of rubik.quarter_twists moves</span>
+        <span class="c1"># each of which is a permutation corresponding to a move on a pocket cube</span>
+
+        <span class="c1"># next states from one is generated by perm_apply(t, position)</span>
+        <span class="c1"># where t is an element of rubik.quarter_twists and current position</span>
+        <span class="c1"># that is a permutaitonf a tuple of length 24 whose element is 0..23</span>
+
+        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="n">end</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">parent_from_start</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">parent_from_end</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">queue_start</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="n">queue_end</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="n">queue_start</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">queue_end</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="n">parent_from_start</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">parent_from_end</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">queue_start</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">queue_end</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">start_result</span> <span class="o">=</span> <span class="n">bfs_routine</span><span class="p">(</span><span class="n">parent_from_start</span><span class="p">,</span> <span class="n">parent_from_end</span><span class="p">,</span>
+                <span class="n">queue_start</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">start_result</span>
+            <span class="n">end_result</span> <span class="o">=</span> <span class="n">bfs_routine</span><span class="p">(</span><span class="n">parent_from_end</span><span class="p">,</span> <span class="n">parent_from_start</span><span class="p">,</span>
+                <span class="n">queue_end</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">end_result</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
