@@ -1,5 +1,5 @@
 Title: Two-way BFS on 2 by 2 by 2 rubik's cube
-Date: 2018-02-22 20:00
+Date: 2018-02-02 20:00
 Category: Computer Science
 Tags: BFS, Puzzle, Rubik's cube, Python
 Slug: Two-way BFS on 222 rubik's cube
